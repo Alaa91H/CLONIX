@@ -137,7 +137,9 @@ public class CloneTestReceiver extends BroadcastReceiver {
             } else if ("unfreeze".equals(op) && pkg != null && userId >= 0) {
                 try {
                     CloneManager.unfreeze(c, pkg, userId);
-                    return "unfrozen:" + pkg + ":u" + userId;
+                    boolean still = CloneManager.isFrozen(c, pkg, userId);
+                    return (still ? "still-frozen-external:" : "unfrozen:")
+                        + pkg + ":u" + userId;
                 } catch (Throwable t) {
                     return "unfreeze FAILED:" + t.getMessage();
                 }

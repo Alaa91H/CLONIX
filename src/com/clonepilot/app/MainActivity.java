@@ -546,12 +546,21 @@ public class MainActivity extends Activity {
                     boolean frozen = CloneManager.isFrozen(this, cl.pkg, cl.userId);
                     if (frozen) CloneManager.unfreeze(this, cl.pkg, cl.userId);
                     else CloneManager.freeze(this, cl.pkg, cl.userId);
-                    final boolean nowFrozen = !frozen;
+                    // Verify: an external suspender (adb/another app) keeps it frozen.
+                    final boolean nowFrozen = CloneManager.isFrozen(this, cl.pkg, cl.userId);
+                    final boolean wasFrozen = frozen;
                     runOnUiThread(() -> {
                         try {
                             btnFreeze.setText(nowFrozen ? R.string.unfreeze : R.string.freeze);
-                            Toast.makeText(this, nowFrozen ? R.string.frozen : R.string.unfrozen,
-                                Toast.LENGTH_SHORT).show();
+                            if (!wasFrozen && nowFrozen) {
+                                Toast.makeText(this, R.string.frozen, Toast.LENGTH_SHORT).show();
+                            } else if (wasFrozen && !nowFrozen) {
+                                Toast.makeText(this, R.string.unfrozen, Toast.LENGTH_SHORT).show();
+                            } else if (wasFrozen) {
+                                Toast.makeText(this, R.string.frozen_external, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, R.string.frozen, Toast.LENGTH_SHORT).show();
+                            }
                         } catch (Throwable ignore) { }
                     });
                 } catch (Throwable t) {

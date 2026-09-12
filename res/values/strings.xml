@@ -91,6 +91,7 @@
     <string name="unfreeze">إلغاء التجميد</string>
     <string name="frozen">تم التجميد ❄</string>
     <string name="unfrozen">تم إلغاء التجميد</string>
+    <string name="frozen_external">ما زالت مجمدة من مصدر خارجي (adb أو تطبيق آخر)</string>
     <string name="frozen_mark">❄ مجمدة</string>
     <string name="app_info_btn">معلومات النسخة</string>
     <string name="no_hibernate">منع سبات التطبيق</string>
