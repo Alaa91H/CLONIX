@@ -45,8 +45,12 @@ public class DualBadgeUtil {
      * To look EXACTLY like the original icon, the base glyph is drawn in the
      * adaptive safe zone (centered ~66%) instead of full-bleed: full-bleed
      * gets its corners cropped by circle/squircle masks and looks "different".
-     * The badge sits small on the glyph's bottom-right edge, inside the mask,
-     * with a subtle dark outline so it reads on any wallpaper.
+     *
+     * The badge lives FULLY INSIDE the circle mask (verified pixel-by-pixel
+     * against a Pixel-style mask): corner-placed badges get half-clipped into
+     * an ugly blob with an invisible number. A thin light separator keeps the
+     * badge readable on any glyph color. Rings style draws rings only at this
+     * size (number stays fully visible in-app where nothing is masked).
      */
     public static Bitmap shortcutBitmap(Context c, Drawable base,
                                         int slotIndex, String style,
@@ -60,23 +64,26 @@ public class DualBadgeUtil {
             base.draw(cv);
         }
         if (BadgeSettings.STYLE_NONE.equals(style)) return bmp;
-        float r = size * 0.14f;
-        float cx = BadgeSettings.POS_BL.equals(pos) ? size * 0.24f : size * 0.76f;
-        float cy = size * 0.76f;
+        float r = size * 0.115f;
+        float cx = BadgeSettings.POS_BL.equals(pos) ? size * 0.37f : size * 0.63f;
+        float cy = size * 0.63f;
+        Paint sep = new Paint(Paint.ANTI_ALIAS_FLAG);
+        sep.setColor(0xFFFFFFFF);
+        sep.setStyle(Paint.Style.FILL);
+        cv.drawCircle(cx, cy, r + Math.max(2f, r * 0.12f), sep);
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
         bg.setColor(color);
         bg.setStyle(Paint.Style.FILL);
         cv.drawCircle(cx, cy, r, bg);
-        if (BadgeSettings.STYLE_NUMBER.equals(style)) {
+        if (BadgeSettings.STYLE_NUMBER.equals(style) || showNum) {
             drawNumber(cv, cx, cy, r, slotIndex);
         } else {
             Paint ring = new Paint(Paint.ANTI_ALIAS_FLAG);
             ring.setColor(0xFFFFFFFF);
             ring.setStyle(Paint.Style.STROKE);
-            ring.setStrokeWidth(r * 0.14f);
-            cv.drawCircle(cx - r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
-            cv.drawCircle(cx + r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
-            if (showNum) drawNumber(cv, cx, cy + r * 0.30f, r * 0.60f, slotIndex);
+            ring.setStrokeWidth(Math.max(2f, r * 0.16f));
+            cv.drawCircle(cx - r * 0.24f, cy - r * 0.10f, r * 0.36f, ring);
+            cv.drawCircle(cx + r * 0.24f, cy - r * 0.10f, r * 0.36f, ring);
         }
         return bmp;
     }
