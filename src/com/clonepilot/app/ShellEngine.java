@@ -202,7 +202,32 @@ public final class ShellEngine {
 
     public static void startActivityAsUser(String component, int userId) throws Exception {
         ExecResult r = su("am", "start", "--user", String.valueOf(userId), "-n", component);
-        if (!r.ok && !r.out.contains("Starting:")) throw new Exception(r.out);
+        // NOTE: `am start` prints "Starting:" even on its way to an error line,
+        // so success requires the absence of "Error".
+        if ((!r.ok && !r.out.contains("Starting:")) || r.out.contains("Error")) {
+            throw new Exception(r.out);
+        }
+    }
+
+    private static final Pattern RUNNING_LINE =
+            Pattern.compile("UserInfo\\{(\\d+):[^}]*\\}\\s+running");
+
+    /** Wait until `pm list users` shows the user as running (profile unlocked). */
+    public static boolean waitForUserRunning(int userId, long timeoutMs) {
+        long end = System.currentTimeMillis() + timeoutMs;
+        while (System.currentTimeMillis() < end) {
+            try {
+                ExecResult r = su("pm", "list", "users");
+                if (r.ok) {
+                    Matcher m = RUNNING_LINE.matcher(r.out);
+                    while (m.find()) {
+                        if (Integer.parseInt(m.group(1)) == userId) return true;
+                    }
+                }
+            } catch (Throwable ignore) { }
+            try { Thread.sleep(500); } catch (Throwable ignore) { }
+        }
+        return false;
     }
 
     /** Split "pkg/.Cls" or "pkg/pkg.Cls" into [pkg, class]. */

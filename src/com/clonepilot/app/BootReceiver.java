@@ -13,8 +13,13 @@ public class BootReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(a)
                 || Intent.ACTION_LOCKED_BOOT_COMPLETED.equals(a)
                 || "android.intent.action.USER_STARTED".equals(a)) {
-            try { CloneManager.startAllClonesInBackground(c); }
-            catch (Throwable t) { Log.w("ClonePilot", "boot start failed", t); }
+            final BroadcastReceiver.PendingResult pr = goAsync();
+            final Context app = c.getApplicationContext();
+            new Thread(() -> {
+                try { CloneManager.startAllClonesInBackground(app); }
+                catch (Throwable t) { Log.w("ClonePilot", "boot start failed", t); }
+                finally { try { pr.finish(); } catch (Throwable ignore) { } }
+            }).start();
         }
     }
 }

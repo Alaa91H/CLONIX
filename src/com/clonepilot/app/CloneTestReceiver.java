@@ -62,36 +62,46 @@ public class CloneTestReceiver extends BroadcastReceiver {
         }
         Log.i(TAG, "TEST authorized attrib=" + caller);
         if (i == null || !ACTION.equals(i.getAction())) return;
+        // Heavy su/pm work runs off-main-thread via goAsync (no ANR, result kept).
+        final BroadcastReceiver.PendingResult pr = goAsync();
+        final Context app = c.getApplicationContext();
+        final Intent intent = i;
+        new Thread(() -> {
+            String res;
+            try {
+                res = runOp(app, intent);
+            } catch (Throwable t) {
+                res = "error:" + t;
+                Log.e(TAG, "TEST failed", t);
+            }
+            Log.i(TAG, "TEST done -> " + res);
+            pr.setResultData(res);
+            pr.finish();
+        }).start();
+    }
+
+    private String runOp(Context c, Intent i) {
+        CloneDatabase db = new CloneDatabase(c);
         String op = i.getStringExtra("op");
         String pkg = i.getStringExtra("pkg");
         int userId = i.getIntExtra("userId", -1);
-        String res;
-        try {
-            CloneDatabase db = new CloneDatabase(c);
-            if ("status".equals(op)) {
-                res = "engine=" + ShellEngine.mode(c)
-                    + " clones=" + db.listAll().size();
-            } else if ("clone".equals(op) && pkg != null) {
-                String nick = i.getStringExtra("nickname");
-                boolean sep = i.getBooleanExtra("separate", true);
-                int uid = CloneManager.cloneToNextSlot(c, db, pkg,
-                    nick == null ? "" : nick, sep);
-                res = uid >= 0 ? "cloned:" + pkg + ":u" + uid : "clone:FAILED";
-            } else if ("launch".equals(op) && pkg != null && userId >= 0) {
-                CloneManager.launchClone(c, pkg, userId);
-                res = "launched:" + pkg + ":u" + userId;
-            } else if ("delete".equals(op) && pkg != null && userId >= 0) {
-                CloneManager.deleteClone(c, db, pkg, userId);
-                res = "deleted:" + pkg + ":u" + userId;
-            } else {
-                res = "usage: op=clone|launch|delete|status pkg=... userId=..";
-            }
-        } catch (Throwable t) {
-            res = "error:" + t;
-            Log.e(TAG, "TEST failed", t);
+        if ("status".equals(op)) {
+            return "engine=" + ShellEngine.mode(c)
+                + " clones=" + db.listAll().size();
+        } else if ("clone".equals(op) && pkg != null) {
+            String nick = i.getStringExtra("nickname");
+            boolean sep = i.getBooleanExtra("separate", true);
+            int uid = CloneManager.cloneToNextSlot(c, db, pkg,
+                nick == null ? "" : nick, sep);
+            return uid >= 0 ? "cloned:" + pkg + ":u" + uid : "clone:FAILED";
+        } else if ("launch".equals(op) && pkg != null && userId >= 0) {
+            boolean ok = CloneManager.launchClone(c, pkg, userId);
+            return (ok ? "launched:" : "launch FAILED:") + pkg + ":u" + userId;
+        } else if ("delete".equals(op) && pkg != null && userId >= 0) {
+            CloneManager.deleteClone(c, db, pkg, userId);
+            return "deleted:" + pkg + ":u" + userId;
+        } else {
+            return "usage: op=clone|launch|delete|status pkg=... userId=..";
         }
-        Log.i(TAG, "TEST " + op + " -> " + res);
-        setResultData(res);
-        try { Thread.sleep(300); } catch (Throwable ignore) { }
     }
 }

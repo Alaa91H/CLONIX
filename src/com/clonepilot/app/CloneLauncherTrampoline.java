@@ -8,15 +8,18 @@ import android.os.Bundle;
 public class CloneLauncherTrampoline extends Activity {
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
-        try {
-            Intent i = getIntent();
-            String pkg = i.getStringExtra("extra_pkg");
-            int userId = i.getIntExtra("extra_userId", -1);
-            if (pkg != null && userId >= 0) {
-                CloneManager.launchClone(this, pkg, userId);
-            }
-        } catch (Throwable ignore) {}
-        finish();
+        Intent i = getIntent();
+        final String pkg = i == null ? null : i.getStringExtra("extra_pkg");
+        final int userId = i == null ? -1 : i.getIntExtra("extra_userId", -1);
+        // Launch off-main-thread (user start + resolve may take seconds).
+        new Thread(() -> {
+            try {
+                if (pkg != null && userId >= 0) {
+                    CloneManager.launchClone(getApplicationContext(), pkg, userId);
+                }
+            } catch (Throwable ignore) {}
+            runOnUiThread(this::finish);
+        }).start();
     }
 
     public static Intent shortcutIntent(String pkg, int userId) {

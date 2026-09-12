@@ -408,14 +408,20 @@ public class CloneManager {
         }
     }
 
-    public static void launchClone(Context c, String pkg, int userId) {
-        // ROOT/fast path first: resolve + `am start --user` (proven cmds).
+    public static boolean launchClone(Context c, String pkg, int userId) {
+        // ROOT/fast path first: start, WAIT for unlock, resolve, `am start`.
         try {
             startUserInBackground(userId);
+            ShellEngine.waitForUserRunning(userId, 10000);
             String comp = ShellEngine.resolveLauncher(pkg, userId);
+            if (comp == null) {
+                // One retry: profiles sometimes need a moment after unlock.
+                try { Thread.sleep(1500); } catch (Throwable ignore) { }
+                comp = ShellEngine.resolveLauncher(pkg, userId);
+            }
             if (comp != null) {
                 ShellEngine.startActivityAsUser(comp, userId);
-                return;
+                return true;
             }
         } catch (Throwable t) { Log.w(TAG, "ROOT launch failed, trying LauncherApps", t); }
         try {
@@ -425,15 +431,17 @@ public class CloneManager {
             for (android.content.pm.LauncherActivityInfo ai : la.getActivityList(pkg, uh)) {
                 Bundle opts = null;
                 la.startMainActivity(ai.getComponentName(), uh, null, opts);
-                return;
+                return true;
             }
             // Fallback: generic MAIN
             Intent i = c.getPackageManager().getLaunchIntentForPackage(pkg);
             if (i != null) {
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 SysApi.startActivityAsUser(c, i, userId);
+                return true;
             }
         } catch (Throwable t) { Log.e(TAG, "launch failed " + pkg + " u" + userId, t); }
+        return false;
     }
 
     // ---------- filtering (only supported apps are listed) ----------
