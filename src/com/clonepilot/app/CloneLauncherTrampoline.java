@@ -12,10 +12,22 @@ public class CloneLauncherTrampoline extends Activity {
         final String pkg = i == null ? null : i.getStringExtra("extra_pkg");
         final int userId = i == null ? -1 : i.getIntExtra("extra_userId", -1);
         // Launch off-main-thread (user start + resolve may take seconds).
+        // Dead clones (user removed externally) unpin themselves with feedback.
         new Thread(() -> {
             try {
                 if (pkg != null && userId >= 0) {
-                    CloneManager.launchClone(getApplicationContext(), pkg, userId);
+                    boolean alive = true;
+                    try { alive = CloneManager.isInstalledAsUser(getApplicationContext(), pkg, userId); }
+                    catch (Throwable t) { alive = true; }
+                    if (!alive) {
+                        try { CloneShortcuts.unpin(getApplicationContext(), pkg, userId); }
+                        catch (Throwable ignore) { }
+                        runOnUiThread(() -> android.widget.Toast.makeText(
+                            CloneLauncherTrampoline.this,
+                            R.string.clone_gone, android.widget.Toast.LENGTH_LONG).show());
+                    } else {
+                        CloneManager.launchClone(getApplicationContext(), pkg, userId);
+                    }
                 }
             } catch (Throwable ignore) {}
             runOnUiThread(this::finish);

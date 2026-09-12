@@ -74,6 +74,7 @@
     <string name="manage_rename">إعادة تسمية: %1$s</string>
     <string name="manage_delete">حذف: %1$s</string>
     <string name="shortcut_unsupported">اللانشر لا يدعم التثبيت</string>
+    <string name="clone_gone">النسخة غير متوفرة — تمت إزالة سجلها وأيقونتها</string>
     <string name="manage_new">+ نسخة جديدة</string>
     <string name="manage_choose">اختر النسخة</string>
     <string name="manage_shortcut_btn">إنشاء اختصار للشاشة الرئيسية</string>

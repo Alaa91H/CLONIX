@@ -40,8 +40,13 @@ public class DualBadgeUtil {
     /**
      * Home-shortcut composer. The returned bitmap MUST be used with
      * Icon.createWithAdaptiveBitmap: plain bitmaps make launchers wrap the
-     * icon in a white adaptive shape (the "white frame" bug). Badge is drawn
-     * smaller and slightly inward so circle/squircle masks don't clip it.
+     * icon in a white adaptive shape (the "white frame" bug).
+     *
+     * To look EXACTLY like the original icon, the base glyph is drawn in the
+     * adaptive safe zone (centered ~66%) instead of full-bleed: full-bleed
+     * gets its corners cropped by circle/squircle masks and looks "different".
+     * The badge sits small on the glyph's bottom-right edge, inside the mask,
+     * with a subtle dark outline so it reads on any wallpaper.
      */
     public static Bitmap shortcutBitmap(Context c, Drawable base,
                                         int slotIndex, String style,
@@ -50,16 +55,22 @@ public class DualBadgeUtil {
         Bitmap bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas cv = new Canvas(bmp);
         if (base != null) {
-            base.setBounds(0, 0, size, size);
+            int inset = Math.round(size * 0.17f);
+            base.setBounds(inset, inset, size - inset, size - inset);
             base.draw(cv);
         }
         if (BadgeSettings.STYLE_NONE.equals(style)) return bmp;
-        float r = size * 0.17f;
-        float cx = BadgeSettings.POS_BL.equals(pos) ? size * 0.20f : size * 0.80f;
-        float cy = size * 0.80f;
+        float r = size * 0.14f;
+        float cx = BadgeSettings.POS_BL.equals(pos) ? size * 0.24f : size * 0.76f;
+        float cy = size * 0.76f;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
         bg.setColor(color);
         bg.setStyle(Paint.Style.FILL);
+        Paint edge = new Paint(Paint.ANTI_ALIAS_FLAG);
+        edge.setColor(0x66000000);
+        edge.setStyle(Paint.Style.STROKE);
+        edge.setStrokeWidth(Math.max(2f, r * 0.08f));
+        cv.drawCircle(cx, cy, r + edge.getStrokeWidth() / 2f, edge);
         cv.drawCircle(cx, cy, r, bg);
         if (BadgeSettings.STYLE_NUMBER.equals(style)) {
             drawNumber(cv, cx, cy, r, slotIndex);

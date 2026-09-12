@@ -337,6 +337,30 @@ public class MainActivity extends Activity {
             ? cl.nickname : (row.label + " " + cl.slotIndex);
     }
 
+    /**
+     * Open a clone off the main thread (user start + resolve take seconds).
+     * If the clone's user/package is gone, clean its record + shortcut
+     * instead of failing silently.
+     */
+    private void openClone(Row row, CloneDatabase.Clone cl) {
+        Toast.makeText(this, cloneTitle(row, cl) + " …", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            boolean alive = true;
+            try { alive = CloneManager.isInstalledAsUser(this, cl.pkg, cl.userId); }
+            catch (Throwable t) { alive = true; }
+            if (!alive) {
+                try { CloneShortcuts.unpin(this, cl.pkg, cl.userId); } catch (Throwable ignore) { }
+                db.remove(cl.pkg, cl.userId);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, R.string.clone_gone, Toast.LENGTH_LONG).show();
+                    reload();
+                });
+                return;
+            }
+            CloneManager.launchClone(this, cl.pkg, cl.userId);
+        }).start();
+    }
+
     private void showManageDialog(Row row) {
         if (row.clones.isEmpty()) { showCloneDialog(row); return; }
         View v = LayoutInflater.from(this).inflate(R.layout.dialog_manage, null);
@@ -380,8 +404,7 @@ public class MainActivity extends Activity {
         });
         btnOpen.setOnClickListener(x -> {
             if (dlg[0] != null) dlg[0].dismiss();
-            CloneDatabase.Clone cl = row.clones.get(sel[0]);
-            CloneManager.launchClone(this, cl.pkg, cl.userId);
+            openClone(row, row.clones.get(sel[0]));
         });
         btnShortcut.setOnClickListener(x -> createShortcut(row, row.clones.get(sel[0])));
         btnBadgeOne.setOnClickListener(x -> {
@@ -422,8 +445,7 @@ public class MainActivity extends Activity {
         // Tap the big preview to open the selected clone immediately.
         View.OnClickListener openSel = x -> {
             if (dlg[0] != null) dlg[0].dismiss();
-            CloneDatabase.Clone cl = row.clones.get(sel[0]);
-            CloneManager.launchClone(this, cl.pkg, cl.userId);
+            openClone(row, row.clones.get(sel[0]));
         };
         selIcon.setOnClickListener(openSel);
         selName.setOnClickListener(openSel);
