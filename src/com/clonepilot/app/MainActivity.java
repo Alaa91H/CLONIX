@@ -153,8 +153,37 @@ public class MainActivity extends Activity {
     }
 
     private void showBadgeDialog() {
+        showBadgeDialog(null, null);
+    }
+
+    /**
+     * Badge editor with LIVE preview.
+     * @param row app row for the preview base icon (null = global: app's own icon).
+     * @param cl target clone, or null to edit the GLOBAL defaults.
+     */
+    private void showBadgeDialog(Row row, CloneDatabase.Clone cl) {
+        boolean perClone = cl != null;
         BadgeSettings s = new BadgeSettings(this);
+        Drawable baseIcon = null;
+        try {
+            baseIcon = perClone ? row.icon
+                : pm.getApplicationIcon(getPackageName());
+        } catch (Throwable ignore) { }
+        final Drawable base = baseIcon;
+
+        // Current effective values (clone overrides or global).
+        String initStyle = !perClone ? s.style()
+            : (cl.badgeStyle != null ? cl.badgeStyle : s.style());
+        int initColor = !perClone ? s.color()
+            : (cl.badgeColor != -1 ? cl.badgeColor : s.color());
+        boolean initShow = !perClone ? s.showNumber()
+            : (cl.badgeShowNum != -1 ? cl.badgeShowNum == 1 : s.showNumber());
+        String initPos = !perClone ? s.position()
+            : (cl.badgePos != null ? cl.badgePos : s.position());
+        final int initSlot = perClone ? cl.slotIndex : 1;
+
         View v = LayoutInflater.from(this).inflate(R.layout.dialog_badge, null);
+        ImageView preview = v.findViewById(R.id.preview);
         android.widget.RadioGroup rgStyle = v.findViewById(R.id.rg_style);
         MaterialRadioButton rbRings = v.findViewById(R.id.rb_rings);
         MaterialRadioButton rbNumber = v.findViewById(R.id.rb_number);
@@ -163,37 +192,83 @@ public class MainActivity extends Activity {
         android.widget.RadioGroup rgColor = v.findViewById(R.id.rg_color);
         android.widget.RadioGroup rgPos = v.findViewById(R.id.rg_pos);
 
-        String style = s.style();
-        if (BadgeSettings.STYLE_NUMBER.equals(style)) rbNumber.setChecked(true);
-        else if (BadgeSettings.STYLE_NONE.equals(style)) rbNone.setChecked(true);
+        if (BadgeSettings.STYLE_NUMBER.equals(initStyle)) rbNumber.setChecked(true);
+        else if (BadgeSettings.STYLE_NONE.equals(initStyle)) rbNone.setChecked(true);
         else rbRings.setChecked(true);
-        cbNumber.setChecked(s.showNumber());
+        cbNumber.setChecked(initShow);
 
         int[] colorBtns = {R.id.rc0, R.id.rc1, R.id.rc2, R.id.rc3, R.id.rc4, R.id.rc5, R.id.rc6};
-        int ci = s.colorIndex();
-        if (ci >= 0 && ci < colorBtns.length) rgColor.check(colorBtns[ci]);
-        rgPos.check(BadgeSettings.POS_BL.equals(s.position()) ? R.id.rp_bl : R.id.rp_br);
+        int ci = 0;
+        for (int i = 0; i < BadgeSettings.COLORS.length && i < colorBtns.length; i++) {
+            if (BadgeSettings.COLORS[i] == initColor) { ci = i; break; }
+        }
+        rgColor.check(colorBtns[ci]);
+        rgPos.check(BadgeSettings.POS_BL.equals(initPos) ? R.id.rp_bl : R.id.rp_br);
 
-        new MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.badge_settings)
+        Runnable refresh = () -> {
+            int cs = rgStyle.getCheckedRadioButtonId();
+            String st = cs == R.id.rb_number ? BadgeSettings.STYLE_NUMBER
+                : cs == R.id.rb_none ? BadgeSettings.STYLE_NONE : BadgeSettings.STYLE_RINGS;
+            int cc = rgColor.getCheckedRadioButtonId();
+            int co = BadgeSettings.COLORS[0];
+            for (int i = 0; i < colorBtns.length; i++) {
+                if (colorBtns[i] == cc) { co = BadgeSettings.COLORS[i]; break; }
+            }
+            String po = rgPos.getCheckedRadioButtonId() == R.id.rp_bl
+                ? BadgeSettings.POS_BL : BadgeSettings.POS_BR;
+            preview.setImageDrawable(DualBadgeUtil.preview(
+                MainActivity.this, base, initSlot, st, co, cbNumber.isChecked(), po));
+        };
+        android.widget.RadioGroup.OnCheckedChangeListener rl =
+            (g, id) -> refresh.run();
+        rgStyle.setOnCheckedChangeListener(rl);
+        rgColor.setOnCheckedChangeListener(rl);
+        rgPos.setOnCheckedChangeListener(rl);
+        cbNumber.setOnCheckedChangeListener((b, checked) -> refresh.run());
+        refresh.run();
+
+        MaterialAlertDialogBuilder bld = new MaterialAlertDialogBuilder(this)
+            .setTitle(perClone ? getString(R.string.badge_per_clone_title, cloneTitle(row, cl))
+                    : getString(R.string.badge_settings))
             .setView(v)
             .setPositiveButton(R.string.confirm, (d, w) -> {
                 int checkedStyle = rgStyle.getCheckedRadioButtonId();
-                if (checkedStyle == R.id.rb_number) s.setStyle(BadgeSettings.STYLE_NUMBER);
-                else if (checkedStyle == R.id.rb_none) s.setStyle(BadgeSettings.STYLE_NONE);
-                else s.setStyle(BadgeSettings.STYLE_RINGS);
-                s.setShowNumber(cbNumber.isChecked());
-                int checkedColor = rgColor.getCheckedRadioButtonId();
-                for (int i = 0; i < colorBtns.length; i++) {
-                    if (colorBtns[i] == checkedColor) { s.setColor(BadgeSettings.COLORS[i]); break; }
+                final String st = checkedStyle == R.id.rb_number ? BadgeSettings.STYLE_NUMBER
+                    : checkedStyle == R.id.rb_none ? BadgeSettings.STYLE_NONE
+                    : BadgeSettings.STYLE_RINGS;
+                final boolean sh = cbNumber.isChecked();
+                final int co = colorFor(rgColor.getCheckedRadioButtonId(), colorBtns);
+                final String po = rgPos.getCheckedRadioButtonId() == R.id.rp_bl
+                    ? BadgeSettings.POS_BL : BadgeSettings.POS_BR;
+                if (!perClone) {
+                    s.setStyle(st);
+                    s.setShowNumber(sh);
+                    s.setColor(co);
+                    s.setPosition(po);
+                } else {
+                    new Thread(() -> {
+                        db.updateBadge(cl.pkg, cl.userId, st, co, sh ? 1 : 0, po);
+                        runOnUiThread(this::reload);
+                    }).start();
                 }
-                int checkedPos = rgPos.getCheckedRadioButtonId();
-                s.setPosition(checkedPos == R.id.rp_bl ? BadgeSettings.POS_BL : BadgeSettings.POS_BR);
                 Toast.makeText(this, R.string.badge_saved, Toast.LENGTH_LONG).show();
                 reload();
             })
-            .setNegativeButton(R.string.cancel, null)
-            .show();
+            .setNegativeButton(R.string.cancel, null);
+        if (perClone) {
+            bld.setNeutralButton(R.string.badge_use_global, (d, w) -> new Thread(() -> {
+                db.clearBadge(cl.pkg, cl.userId);
+                runOnUiThread(this::reload);
+            }).start());
+        }
+        bld.show();
+    }
+
+    private static int colorFor(int checkedId, int[] btns) {
+        for (int i = 0; i < btns.length && i < BadgeSettings.COLORS.length; i++) {
+            if (btns[i] == checkedId) return BadgeSettings.COLORS[i];
+        }
+        return BadgeSettings.COLORS[0];
     }
 
     private void showCloneDialog(Row row) {
@@ -237,40 +312,110 @@ public class MainActivity extends Activity {
 
     private void showManageDialog(Row row) {
         if (row.clones.isEmpty()) { showCloneDialog(row); return; }
-        List<String> items = new ArrayList<>();
-        for (CloneDatabase.Clone cl : row.clones) {
-            String title = cloneTitle(row, cl);
-            items.add(getString(R.string.manage_open, title));
-            items.add(getString(R.string.manage_shortcut, title));
-            items.add(getString(R.string.manage_rename, title));
-            items.add(getString(R.string.manage_delete, title));
+        View v = LayoutInflater.from(this).inflate(R.layout.dialog_manage, null);
+        ImageView appIcon = v.findViewById(R.id.app_icon);
+        TextView appName = v.findViewById(R.id.app_name);
+        TextView appCount = v.findViewById(R.id.app_count);
+        MaterialButton btnNew = v.findViewById(R.id.btn_new);
+        android.widget.AutoCompleteTextView spinner =
+            v.findViewById(R.id.spinner);
+        ImageView selIcon = v.findViewById(R.id.selected_icon);
+        TextView selName = v.findViewById(R.id.selected_name);
+        MaterialButton btnShortcut = v.findViewById(R.id.btn_shortcut);
+        MaterialButton btnBadgeOne = v.findViewById(R.id.btn_badge_one);
+        MaterialButton btnRename = v.findViewById(R.id.btn_rename);
+        MaterialButton btnDelete = v.findViewById(R.id.btn_delete);
+
+        appIcon.setImageDrawable(row.icon);
+        appName.setText(row.label);
+        appCount.setText(getString(R.string.clones_count, row.clones.size()));
+
+        CloneAdapter adapter = new CloneAdapter(this, row);
+        spinner.setAdapter(adapter);
+
+        final int[] sel = {0};
+        final androidx.appcompat.app.AlertDialog[] dlg = {null};
+        Runnable render = () -> {
+            if (sel[0] < 0 || sel[0] >= row.clones.size()) sel[0] = 0;
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            selIcon.setImageDrawable(DualBadgeUtil.badgeForClone(MainActivity.this, row.icon, cl));
+            selName.setText(cloneTitle(row, cl));
+        };
+        spinner.setOnItemClickListener((p, view, pos, id) -> {
+            sel[0] = pos;
+            render.run();
+        });
+
+        btnNew.setOnClickListener(x -> {
+            if (dlg[0] != null) dlg[0].dismiss();
+            showCloneDialog(row);
+        });
+        btnShortcut.setOnClickListener(x -> createShortcut(row, row.clones.get(sel[0])));
+        btnBadgeOne.setOnClickListener(x -> {
+            if (dlg[0] != null) dlg[0].dismiss();
+            showBadgeDialog(row, row.clones.get(sel[0]));
+        });
+        btnRename.setOnClickListener(x -> {
+            if (dlg[0] != null) dlg[0].dismiss();
+            showRenameDialog(row, row.clones.get(sel[0]));
+        });
+        btnDelete.setOnClickListener(x -> {
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            new MaterialAlertDialogBuilder(this)
+                .setTitle(cloneTitle(row, cl))
+                .setMessage(R.string.manage_delete_btn)
+                .setPositiveButton(R.string.delete, (dd, ww) -> {
+                    if (dlg[0] != null) dlg[0].dismiss();
+                    new Thread(() -> {
+                        CloneManager.deleteClone(this, db, cl.pkg, cl.userId);
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, R.string.clone_deleted, Toast.LENGTH_SHORT).show();
+                            reload();
+                        });
+                    }).start();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+        });
+
+        dlg[0] = new MaterialAlertDialogBuilder(this)
+            .setView(v)
+            .setNegativeButton(R.string.cancel, null)
+            .create();
+        dlg[0].show();
+        // Preselect first clone without opening the dropdown.
+        spinner.setText(cloneTitle(row, row.clones.get(0)), false);
+        render.run();
+        // Tap the big preview to open the selected clone immediately.
+        View.OnClickListener openSel = x -> {
+            if (dlg[0] != null) dlg[0].dismiss();
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            CloneManager.launchClone(this, cl.pkg, cl.userId);
+        };
+        selIcon.setOnClickListener(openSel);
+        selName.setOnClickListener(openSel);
+    }
+
+    /** Dropdown rows: each clone with its saved name + its own customized badge. */
+    class CloneAdapter extends android.widget.ArrayAdapter<CloneDatabase.Clone> {
+        private final LayoutInflater inf;
+        private final Row row;
+        CloneAdapter(Context c, Row row) {
+            super(c, 0, row.clones);
+            this.inf = LayoutInflater.from(c);
+            this.row = row;
         }
-        items.add(getString(R.string.clone_n, row.clones.size() + 1));
-        new MaterialAlertDialogBuilder(this)
-            .setTitle(row.label + " • " + getString(R.string.clones_count, row.clones.size()))
-            .setItems(items.toArray(new String[0]), (d, which) -> {
-                if (which == items.size() - 1) { showCloneDialog(row); return; }
-                CloneDatabase.Clone cl = row.clones.get(which / 4);
-                switch (which % 4) {
-                    case 0: CloneManager.launchClone(this, cl.pkg, cl.userId); break;
-                    case 1: createShortcut(row, cl); break;
-                    case 2: showRenameDialog(row, cl); break;
-                    default:
-                        new MaterialAlertDialogBuilder(this)
-                            .setTitle(cloneTitle(row, cl))
-                            .setMessage(R.string.delete)
-                            .setPositiveButton(R.string.delete, (dd, ww) -> new Thread(() -> {
-                                CloneManager.deleteClone(this, db, cl.pkg, cl.userId);
-                                runOnUiThread(() -> {
-                                    Toast.makeText(this, R.string.clone_deleted, Toast.LENGTH_SHORT).show();
-                                    reload();
-                                });
-                            }).start())
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                        break;
-                }
-            }).show();
+        private View bind(View cv, ViewGroup parent, int pos) {
+            if (cv == null) cv = inf.inflate(R.layout.item_clone_spinner, parent, false);
+            CloneDatabase.Clone cl = getItem(pos);
+            ImageView icon = cv.findViewById(R.id.spin_icon);
+            TextView name = cv.findViewById(R.id.spin_name);
+            icon.setImageDrawable(DualBadgeUtil.badgeForClone(getContext(), row.icon, cl));
+            name.setText(cloneTitle(row, cl));
+            return cv;
+        }
+        @Override public View getView(int p, View cv, ViewGroup parent) { return bind(cv, parent, p); }
+        @Override public View getDropDownView(int p, View cv, ViewGroup parent) { return bind(cv, parent, p); }
     }
 
     private void showRenameDialog(Row row, CloneDatabase.Clone cl) {
@@ -298,7 +443,7 @@ public class MainActivity extends Activity {
                 return;
             }
             String title = cloneTitle(row, cl);
-            Drawable badged = DualBadgeUtil.badge(this, row.icon, cl.slotIndex);
+            Drawable badged = DualBadgeUtil.badgeForClone(this, row.icon, cl);
             android.graphics.Bitmap bmp = drawableToBitmap(badged);
             android.graphics.Bitmap scaled = android.graphics.Bitmap.createScaledBitmap(bmp, 192, 192, true);
             android.content.pm.ShortcutInfo si = new android.content.pm.ShortcutInfo.Builder(this, "clone_" + cl.pkg + "_" + cl.userId)
@@ -347,7 +492,7 @@ public class MainActivity extends Activity {
         @Override public void onBindViewHolder(Holder h, int pos) {
             Row r = rows.get(pos);
             if (!r.clones.isEmpty())
-                h.icon.setImageDrawable(DualBadgeUtil.badge(MainActivity.this, r.icon, r.clones.get(0).slotIndex));
+                h.icon.setImageDrawable(DualBadgeUtil.badgeForClone(MainActivity.this, r.icon, r.clones.get(0)));
             else h.icon.setImageDrawable(r.icon);
             h.name.setText(r.label);
             h.sub.setText(r.ai.packageName + " • " + getString(R.string.clones_count, r.clones.size()));

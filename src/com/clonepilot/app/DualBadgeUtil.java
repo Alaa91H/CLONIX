@@ -19,9 +19,32 @@ public class DualBadgeUtil {
         return badge(c, base, slotIndex, new BadgeSettings(c));
     }
 
+    /** Per-clone badge: global settings + this clone's overrides (null/-1 = global). */
+    public static Drawable badgeForClone(Context c, Drawable base, CloneDatabase.Clone cl) {
+        BadgeSettings s = new BadgeSettings(c);
+        String style = cl.badgeStyle != null ? cl.badgeStyle : s.style();
+        int color = cl.badgeColor != -1 ? cl.badgeColor : s.color();
+        boolean showNum = cl.badgeShowNum != -1 ? cl.badgeShowNum == 1 : s.showNumber();
+        String pos = cl.badgePos != null ? cl.badgePos : s.position();
+        if (BadgeSettings.STYLE_NONE.equals(style)) return base;
+        return draw(c, base, cl.slotIndex, style, color, showNum, pos);
+    }
+
+    /** Live preview renderer with explicit options (used by the badge dialog). */
+    public static Drawable preview(Context c, Drawable base, int slotIndex,
+                                   String style, int color, boolean showNum, String pos) {
+        if (BadgeSettings.STYLE_NONE.equals(style)) return base;
+        return draw(c, base, slotIndex, style, color, showNum, pos);
+    }
+
     public static Drawable badge(Context c, Drawable base, int slotIndex, BadgeSettings s) {
-        if (base == null) return null;
         if (s == null || !s.enabled()) return base;
+        return draw(c, base, slotIndex, s.style(), s.color(), s.showNumber(), s.position());
+    }
+
+    private static Drawable draw(Context c, Drawable base, int slotIndex,
+                                 String style, int color, boolean showNum, String pos) {
+        if (base == null) return null;
 
         int size = Math.max(base.getIntrinsicWidth(), base.getIntrinsicHeight());
         if (size <= 0) size = 192;
@@ -32,16 +55,15 @@ public class DualBadgeUtil {
 
         float r = size * 0.22f;
         float margin = size * 0.04f;
-        boolean left = BadgeSettings.POS_BL.equals(s.position());
+        boolean left = BadgeSettings.POS_BL.equals(pos);
         float cx = left ? (r + margin) : (size - r - margin);
         float cy = size - r - margin;
 
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bg.setColor(s.color());
+        bg.setColor(color);
         bg.setStyle(Paint.Style.FILL);
         cv.drawCircle(cx, cy, r, bg);
 
-        String style = s.style();
         if (BadgeSettings.STYLE_NUMBER.equals(style)) {
             drawNumber(cv, cx, cy, r, slotIndex);
         } else { // rings (+ number per user toggle)
@@ -51,7 +73,7 @@ public class DualBadgeUtil {
             ring.setStrokeWidth(r * 0.14f);
             cv.drawCircle(cx - r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
             cv.drawCircle(cx + r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
-            if (s.showNumber() && slotIndex > 1) {
+            if (showNum && slotIndex > 1) {
                 drawNumber(cv, cx, cy + r * 0.28f, r * 0.62f, slotIndex);
             }
         }

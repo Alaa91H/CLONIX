@@ -140,7 +140,7 @@ public class StorageActivity extends Activity {
             try {
                 android.content.pm.ApplicationInfo ai = pm.getApplicationInfo(cl.pkg, 0);
                 Drawable ic = pm.getApplicationIcon(ai);
-                r.icon = DualBadgeUtil.badge(this, ic, cl.slotIndex);
+                r.icon = DualBadgeUtil.badgeForClone(this, ic, cl);
             } catch (Throwable t) { r.icon = g.baseIcon; }
             r.usage = CloneStorageHelper.queryPackage(this, cl.pkg, cl.userId);
             g.clones.add(r);
