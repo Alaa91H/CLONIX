@@ -338,16 +338,36 @@ public final class ShellEngine {
     }
 
     /**
-     * Fast suspended check via package-restrictions.xml (root read).
-     * Falls back to false when unreadable.
+     * Suspended state per user, read from `dumpsys package` ("User <id>: ...
+     * suspended=true"). The package-restrictions.xml layout varies by release
+     * (attributes may span lines), so dumpsys is the reliable source.
      */
     public static boolean isSuspended(String pkg, int userId) {
         try {
             if (userId < 0 || !SAFE_PKG.matcher(pkg).matches()) return false;
-            ExecResult r = su("sh", "-c",
-                "grep 'suspended=\"true\"' '/data/system/users/" + userId
-                + "/package-restrictions.xml' 2>/dev/null | grep -F '\"" + pkg + "\"'");
-            return r.ok && r.out.contains(pkg);
+            ExecResult r = su("dumpsys", "package", pkg);
+            if (!r.ok) return false;
+            boolean inSection = false;
+            for (String rawLine : r.out.split("\n")) {
+                String line = rawLine.trim();
+                if (line.startsWith("User ")) {
+                    // Sections look like: "User 24: ceDataInode=... suspended=true ..."
+                    // (same-line attributes) or with attributes on following lines.
+                    inSection = line.startsWith("User " + userId + ":")
+                        || line.startsWith("User " + userId + " ");
+                    if (inSection && line.contains("suspended=true")) return true;
+                    continue;
+                }
+                if (inSection) {
+                    if (line.contains("suspended=true")) return true;
+                    // Next section/package block ends this user block.
+                    if (line.startsWith("User ") || line.startsWith("Queries:")
+                            || line.startsWith("Dexopt state:")) {
+                        inSection = false;
+                    }
+                }
+            }
+            return false;
         } catch (Throwable t) { return false; }
     }
 
