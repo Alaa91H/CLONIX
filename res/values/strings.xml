@@ -87,6 +87,13 @@
     <string name="manage_shortcut_btn">إنشاء اختصار للشاشة الرئيسية</string>
     <string name="manage_rename_btn">إعادة تسمية</string>
     <string name="manage_delete_btn">حذف النسخة</string>
+    <string name="freeze">تجميد ❄</string>
+    <string name="unfreeze">إلغاء التجميد</string>
+    <string name="frozen">تم التجميد ❄</string>
+    <string name="unfrozen">تم إلغاء التجميد</string>
+    <string name="frozen_mark">❄ مجمدة</string>
+    <string name="app_info_btn">معلومات النسخة</string>
+    <string name="no_hibernate">منع سبات التطبيق</string>
     <string name="manage_badge_btn">شارة هذه النسخة</string>
     <string name="badge_preview">معاينة حية</string>
     <string name="badge_use_global">استخدام العامة</string>

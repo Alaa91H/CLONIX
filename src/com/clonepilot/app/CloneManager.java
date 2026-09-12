@@ -364,8 +364,28 @@ public class CloneManager {
         return -1;
     }
 
-    public static void deleteClone(Context c, CloneDatabase db, String pkg, int userId) {
-        // Remove its home shortcut(s) first so no dead icons remain.
+    /**
+     * Freeze a clone: suspend (grey icon, hidden notifications, stopped
+     * activities) + force-stop running processes. Data fully intact.
+     * Unfreeze with unfreeze(). Root required (user-scoped suspend has no
+     * public API; ROM builds can add SUSPEND_APPS later).
+     */
+    public static void freeze(Context c, String pkg, int userId) throws Exception {
+        ShellEngine.suspend(pkg, userId);
+        try { ShellEngine.forceStop(pkg, userId); }
+        catch (Throwable t) { Log.w(TAG, "force-stop failed", t); }
+    }
+
+    public static void unfreeze(Context c, String pkg, int userId) throws Exception {
+        ShellEngine.unsuspend(pkg, userId);
+    }
+
+    /** Frozen state is per-user; only the root XML check is user-scoped. */
+    public static boolean isFrozen(Context c, String pkg, int userId) {
+        return ShellEngine.isSuspended(pkg, userId);
+    }
+
+    public static void deleteClone(Context c, CloneDatabase db, String pkg, int userId) {        // Remove its home shortcut(s) first so no dead icons remain.
         try { CloneShortcuts.unpin(c, pkg, userId); } catch (Throwable ignore) { }
         uninstallAsUser(c, pkg, userId);
         db.remove(pkg, userId);

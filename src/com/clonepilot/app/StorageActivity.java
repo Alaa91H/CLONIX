@@ -274,6 +274,10 @@ public class StorageActivity extends Activity {
      * so manual clear/cache there affects the right copy.
      */
     private void openAppInfo(String pkg, int userId) {
+        openAppInfoStatic(this, pkg, userId);
+    }
+
+    static void openAppInfoStatic(Context c, String pkg, int userId) {
         try {
             String comp = ShellEngine.resolveAppDetails(pkg, userId);
             if (comp != null) {
@@ -282,13 +286,15 @@ public class StorageActivity extends Activity {
                     Uri.parse("package:" + pkg));
                 i.setClassName(pc[0], pc[1]);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                SysApi.startActivityAsUser(this, i, userId);
+                SysApi.startActivityAsUser(c, i, userId);
                 return;
             }
         } catch (Throwable ignore) { }
         try {
-            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + pkg)));
+            Intent fb = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + pkg));
+            fb.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(fb);
         } catch (Throwable ignore) {}
     }
 }

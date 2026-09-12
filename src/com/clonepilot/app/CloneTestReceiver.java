@@ -127,6 +127,23 @@ public class CloneTestReceiver extends BroadcastReceiver {
             } else if ("clearcache".equals(op) && pkg != null && userId >= 0) {
                 boolean ok = CloneStorageHelper.clearCacheAsUser(c, pkg, userId);
                 return (ok ? "cache-cleared:" : "cache FAILED:") + pkg + ":u" + userId;
+            } else if ("freeze".equals(op) && pkg != null && userId >= 0) {
+                try {
+                    CloneManager.freeze(c, pkg, userId);
+                    return "frozen:" + pkg + ":u" + userId;
+                } catch (Throwable t) {
+                    return "freeze FAILED:" + t.getMessage();
+                }
+            } else if ("unfreeze".equals(op) && pkg != null && userId >= 0) {
+                try {
+                    CloneManager.unfreeze(c, pkg, userId);
+                    return "unfrozen:" + pkg + ":u" + userId;
+                } catch (Throwable t) {
+                    return "unfreeze FAILED:" + t.getMessage();
+                }
+            } else if ("frozen".equals(op) && pkg != null && userId >= 0) {
+                return (CloneManager.isFrozen(c, pkg, userId) ? "frozen:" : "active:")
+                    + pkg + ":u" + userId;
             } else if ("cleardata".equals(op) && pkg != null && userId >= 0) {
             boolean ok = CloneStorageHelper.clearDataAsUser(c, pkg, userId);
             return (ok ? "data-cleared:" : "data FAILED:") + pkg + ":u" + userId;

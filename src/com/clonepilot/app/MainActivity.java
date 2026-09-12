@@ -68,6 +68,18 @@ public class MainActivity extends Activity {
                 showBadgeDialog(null, null);
                 return true;
             }
+            if (item.getItemId() == R.id.menu_no_hibernate) {
+                // System screen to exempt THIS app from auto-revoke/hibernation,
+                // protecting keep-alive + boot receivers. No dependency needed:
+                // plain public intent action.
+                try {
+                    startActivity(new Intent("android.intent.action.AUTO_REVOKE_PERMISSIONS")
+                        .setData(android.net.Uri.parse("package:" + getPackageName())));
+                } catch (Throwable t) {
+                    Toast.makeText(this, String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
             return false;
         });
         list = findViewById(R.id.list);
@@ -440,6 +452,8 @@ public class MainActivity extends Activity {
         MaterialButton btnBadgeOne = v.findViewById(R.id.btn_badge_one);
         MaterialButton btnRename = v.findViewById(R.id.btn_rename);
         MaterialButton btnDelete = v.findViewById(R.id.btn_delete);
+        MaterialButton btnFreeze = v.findViewById(R.id.btn_freeze);
+        MaterialButton btnAppinfo = v.findViewById(R.id.btn_appinfo);
 
         appIcon.setImageDrawable(row.icon);
         appName.setText(row.label);
@@ -511,6 +525,46 @@ public class MainActivity extends Activity {
             openClone(row, row.clones.get(sel[0]));
         };
         selIcon.setOnClickListener(openSel);
+        // Freeze state is queried off-thread (su call); button updates in place.
+        btnFreeze.setText(R.string.freeze);
+        new Thread(() -> {
+            boolean frozen = false;
+            try {
+                CloneDatabase.Clone cur = row.clones.get(sel[0]);
+                frozen = CloneManager.isFrozen(this, cur.pkg, cur.userId);
+            } catch (Throwable ignore) { }
+            final boolean f = frozen;
+            runOnUiThread(() -> {
+                try { btnFreeze.setText(f ? R.string.unfreeze : R.string.freeze); }
+                catch (Throwable ignore) { }
+            });
+        }).start();
+        btnFreeze.setOnClickListener(x -> {
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            new Thread(() -> {
+                try {
+                    boolean frozen = CloneManager.isFrozen(this, cl.pkg, cl.userId);
+                    if (frozen) CloneManager.unfreeze(this, cl.pkg, cl.userId);
+                    else CloneManager.freeze(this, cl.pkg, cl.userId);
+                    final boolean nowFrozen = !frozen;
+                    runOnUiThread(() -> {
+                        try {
+                            btnFreeze.setText(nowFrozen ? R.string.unfreeze : R.string.freeze);
+                            Toast.makeText(this, nowFrozen ? R.string.frozen : R.string.unfrozen,
+                                Toast.LENGTH_SHORT).show();
+                        } catch (Throwable ignore) { }
+                    });
+                } catch (Throwable t) {
+                    runOnUiThread(() -> Toast.makeText(this, String.valueOf(t.getMessage()),
+                        Toast.LENGTH_LONG).show());
+                }
+            }).start();
+        });
+        btnAppinfo.setOnClickListener(x -> {
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            if (dlg[0] != null) dlg[0].dismiss();
+            StorageActivity.openAppInfoStatic(this, cl.pkg, cl.userId);
+        });
     }
 
     /** Dropdown rows: each clone with its saved name + its own customized badge. */

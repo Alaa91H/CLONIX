@@ -5,4 +5,9 @@
         android:title="@string/badge_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:showAsAction="never" />
+    <item
+        android:id="@+id/menu_no_hibernate"
+        android:title="@string/no_hibernate"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:showAsAction="never" />
 </menu>

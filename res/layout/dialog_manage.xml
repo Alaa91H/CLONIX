@@ -78,6 +78,13 @@
         style="@style/Widget.Material3.Button.TonalButton" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_freeze"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/freeze"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_shortcut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,6 +110,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/manage_delete_btn"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_appinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_info_btn"
         style="@style/Widget.Material3.Button.OutlinedButton" />
 </LinearLayout>
 </ScrollView>

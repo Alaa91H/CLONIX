@@ -117,14 +117,31 @@ public final class ShellEngine {
         ShellUser(int id, String name) { this.id = id; this.name = name; }
     }
 
+    /** pm list users, cached 8s to avoid spawning su on every tap. */
+    private static volatile List<ShellUser> usersCache = null;
+    private static volatile long usersCacheAt = 0;
+    private static final long USERS_TTL_MS = 8000;
+
     /** pm list users -> [(id,name)]. Throws on failure. */
     public static List<ShellUser> listUsers() throws Exception {
+        List<ShellUser> hit = usersCache;
+        if (hit != null && System.currentTimeMillis() - usersCacheAt < USERS_TTL_MS) {
+            return new ArrayList<>(hit);
+        }
         ExecResult r = su("pm", "list", "users");
         if (!r.ok) throw new Exception("pm list users failed: " + r.out);
         List<ShellUser> out = new ArrayList<>();
         Matcher m = USER_LINE.matcher(r.out);
         while (m.find()) out.add(new ShellUser(Integer.parseInt(m.group(1)), m.group(2)));
-        return out;
+        usersCache = out;
+        usersCacheAt = System.currentTimeMillis();
+        return new ArrayList<>(out);
+    }
+
+    /** Drop the users cache after create/remove operations. */
+    public static void dropUsersCache() {
+        usersCache = null;
+        usersCacheAt = 0;
     }
 
     private static final Pattern CREATED_ID = Pattern.compile("created user id (\\d+)");
@@ -138,6 +155,7 @@ public final class ShellEngine {
     public static int createUser(String name) throws Exception {
         ExecResult r = su("pm", "create-user", name);
         if (!r.ok) throw new Exception(r.out);
+        dropUsersCache();
         return parseCreatedId(r.out);
     }
 
@@ -145,17 +163,20 @@ public final class ShellEngine {
         ExecResult r = su("pm", "create-user", "--user-type",
                 "android.os.usertype.profile.CLONE", "--profileOf", "0", name);
         if (!r.ok) throw new Exception(r.out);
+        dropUsersCache();
         return parseCreatedId(r.out);
     }
 
     public static int createManagedProfile(String name) throws Exception {
         ExecResult r = su("pm", "create-user", "--profileOf", "0", "--managed", name);
         if (!r.ok) throw new Exception(r.out);
+        dropUsersCache();
         return parseCreatedId(r.out);
     }
 
     public static void removeUser(int userId) throws Exception {
         ExecResult r = su("pm", "remove-user", String.valueOf(userId));
+        dropUsersCache();
         if (!r.ok && !r.out.contains("removed user")) throw new Exception(r.out);
     }
 
@@ -271,8 +292,7 @@ public final class ShellEngine {
         if (!r.ok || !r.out.contains("CLEARED")) throw new Exception(r.out);
     }
 
-    /** Resolve App-Details Settings component for pkg in user (may be null). */
-    public static String resolveAppDetails(String pkg, int userId) {
+    /** Resolve App-Details Settings component for pkg in user (may be null). */    public static String resolveAppDetails(String pkg, int userId) {
         try {
             ExecResult r = su("cmd", "package", "resolve-activity",
                     "--user", String.valueOf(userId), "--brief",
@@ -294,6 +314,40 @@ public final class ShellEngine {
         try {
             ExecResult r = execRoot(new String[]{"id"}, 5000);
             return r.ok && r.out.contains("uid=0");
+        } catch (Throwable t) { return false; }
+    }
+
+    // ---------------- freeze (suspend) ----------------
+    // Suspended clones: grey icon, hidden notifications, stopped activities,
+    // data fully intact. Same primitive Shelter/Hail use. Root/shell only.
+
+    /** Suspend pkg in user (freeze). Verified output: "new suspended state: true". */
+    public static void suspend(String pkg, int userId) throws Exception {
+        ExecResult r = su("pm", "suspend", "--user", String.valueOf(userId), pkg);
+        if (!r.ok || !r.out.contains("true")) throw new Exception(r.out);
+    }
+
+    public static void unsuspend(String pkg, int userId) throws Exception {
+        ExecResult r = su("pm", "unsuspend", "--user", String.valueOf(userId), pkg);
+        if (!r.ok) throw new Exception(r.out);
+    }
+
+    public static void forceStop(String pkg, int userId) throws Exception {
+        ExecResult r = su("am", "force-stop", "--user", String.valueOf(userId), pkg);
+        if (!r.ok) throw new Exception(r.out);
+    }
+
+    /**
+     * Fast suspended check via package-restrictions.xml (root read).
+     * Falls back to false when unreadable.
+     */
+    public static boolean isSuspended(String pkg, int userId) {
+        try {
+            if (userId < 0 || !SAFE_PKG.matcher(pkg).matches()) return false;
+            ExecResult r = su("sh", "-c",
+                "grep 'suspended=\"true\"' '/data/system/users/" + userId
+                + "/package-restrictions.xml' 2>/dev/null | grep -F '\"" + pkg + "\"'");
+            return r.ok && r.out.contains(pkg);
         } catch (Throwable t) { return false; }
     }
 
