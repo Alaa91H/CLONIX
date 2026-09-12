@@ -43,6 +43,9 @@ public final class CloneShortcuts {
         return new ShortcutInfo.Builder(c, idFor(cl.pkg, cl.userId))
             .setShortLabel(title)
             .setIcon(Icon.createWithAdaptiveBitmap(bmp))
+            // Long-lived: allows TRUE deletion later (removeLongLivedShortcuts),
+            // plain disable only greys/hides depending on launcher.
+            .setLongLived(true)
             .setIntent(CloneLauncherTrampoline.shortcutIntent(cl.pkg, cl.userId))
             .build();
     }
@@ -76,8 +79,15 @@ public final class CloneShortcuts {
                     List<ShortcutInfo> one = new ArrayList<>(1);
                     one.add(build(c, title, baseIcon, cl));
                     // updateShortcuts() also updates PINNED shortcuts with same id.
-                    try { s.updateShortcuts(one); }
-                    catch (Throwable t) { Log.w(TAG, "update pinned failed", t); }
+                    // Returns false when system rate-limiting hits: tell the user
+                    // to re-pin manually instead of failing silently.
+                    try {
+                        boolean ok = s.updateShortcuts(one);
+                        if (!ok) {
+                            Log.w(TAG, "update throttled/failed for " + id);
+                            toastMain(c, c.getString(R.string.shortcut_throttled));
+                        }
+                    } catch (Throwable t) { Log.w(TAG, "update pinned failed", t); }
                     return;
                 }
             }
@@ -86,13 +96,28 @@ public final class CloneShortcuts {
         }
     }
 
-    /** Remove this clone's home shortcut(s) from the launcher. */
+    private static void toastMain(final Context c, final String msg) {
+        try {
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                try {
+                    android.widget.Toast.makeText(c.getApplicationContext(),
+                        msg, android.widget.Toast.LENGTH_LONG).show();
+                } catch (Throwable ignore) { }
+            });
+        } catch (Throwable ignore) { }
+    }
+
+    /** Remove this clone's home shortcut(s) from the launcher, completely. */
     public static void unpin(Context c, String pkg, int userId) {
         try {
             ShortcutManager s = sm(c);
             if (s == null) return;
             List<String> ids = new ArrayList<>(1);
             ids.add(idFor(pkg, userId));
+            // Full deletion for long-lived pins (new pins are long-lived).
+            try { s.removeLongLivedShortcuts(ids); }
+            catch (Throwable t) { Log.i(TAG, "removeLongLived: " + t); }
+            // Legacy pins (not long-lived): disable removes them from home.
             try { s.disableShortcuts(ids, c.getString(R.string.clone_deleted)); }
             catch (Throwable t) { Log.w(TAG, "disable pinned failed", t); }
         } catch (Throwable t) {
