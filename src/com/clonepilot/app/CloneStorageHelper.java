@@ -73,7 +73,10 @@ public class CloneStorageHelper {
         return u;
     }
 
-    /** Best-effort clear cache for one clone. Falls back to App-Info screen. */
+    /**
+     * Best-effort clear cache for one clone, executed DIRECTLY.
+     * 1) hidden API (ROM builds), 2) root rm of cache dirs (user builds).
+     */
     public static boolean clearCacheAsUser(Context c, String pkg, int userId) {
         PackageManager pm = c.getPackageManager();
         // Hidden API: deleteApplicationCacheFilesAsUser(String, int, IPackageDataObserver)
@@ -88,13 +91,19 @@ public class CloneStorageHelper {
                 }
             }
         } catch (Throwable t) { Log.w(TAG, "clearCache reflect failed", t); }
+        // ROOT fallback: rm cache + code_cache (strictly guarded paths).
+        try {
+            ShellEngine.rmCache(pkg, userId);
+            return true;
+        } catch (Throwable t) { Log.w(TAG, "ROOT rmCache failed", t); }
         return false;
     }
 
     /**
-     * Clear all data of one clone (factory-reset that clone only).
-     * Clone stays installed, data in /data/user/<id>/pkg is wiped.
-     * Tries hidden cross-user APIs, system uid only.
+     * Clear all data of one clone (factory-reset that clone only),
+     * executed DIRECTLY. Clone stays installed.
+     * 1) hidden cross-user APIs (ROM builds), 2) official `pm clear --user`
+     * (user builds, shell-safe).
      */
     public static boolean clearDataAsUser(Context c, String pkg, int userId) {
         // 1) IActivityManager.clearApplicationUserData(String, IPackageDataObserver, int userId)
@@ -125,6 +134,11 @@ public class CloneStorageHelper {
                 }
             }
         } catch (Throwable t) { Log.w(TAG, "PM.clearData reflect failed", t); }
+        // 3) ROOT/shell fallback: official `pm clear --user`.
+        try {
+            ShellEngine.clearApp(pkg, userId);
+            return true;
+        } catch (Throwable t) { Log.w(TAG, "pm clear --user failed", t); }
         return false;
     }
 

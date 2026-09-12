@@ -100,8 +100,14 @@ public class CloneTestReceiver extends BroadcastReceiver {
         } else if ("delete".equals(op) && pkg != null && userId >= 0) {
             CloneManager.deleteClone(c, db, pkg, userId);
             return "deleted:" + pkg + ":u" + userId;
+        } else if ("clearcache".equals(op) && pkg != null && userId >= 0) {
+            boolean ok = CloneStorageHelper.clearCacheAsUser(c, pkg, userId);
+            return (ok ? "cache-cleared:" : "cache FAILED:") + pkg + ":u" + userId;
+        } else if ("cleardata".equals(op) && pkg != null && userId >= 0) {
+            boolean ok = CloneStorageHelper.clearDataAsUser(c, pkg, userId);
+            return (ok ? "data-cleared:" : "data FAILED:") + pkg + ":u" + userId;
         } else {
-            return "usage: op=clone|launch|delete|status pkg=... userId=..";
+            return "usage: op=clone|launch|delete|status|clearcache|cleardata pkg=... userId=..";
         }
     }
 }

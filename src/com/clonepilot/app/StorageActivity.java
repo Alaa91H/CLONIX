@@ -269,18 +269,26 @@ public class StorageActivity extends Activity {
         }
     }
 
+    /**
+     * Fallback: open App-Info FOR THE CLONE'S user (never the owner's),
+     * so manual clear/cache there affects the right copy.
+     */
     private void openAppInfo(String pkg, int userId) {
         try {
-            Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + pkg));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra("extra_user_id", userId);
-            SysApi.startActivityAsUser(this, i, userId);
-        } catch (Throwable t) {
-            try {
-                startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + pkg)));
-            } catch (Throwable ignore) {}
-        }
+            String comp = ShellEngine.resolveAppDetails(pkg, userId);
+            if (comp != null) {
+                String[] pc = ShellEngine.splitComponent(comp);
+                Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + pkg));
+                i.setClassName(pc[0], pc[1]);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                SysApi.startActivityAsUser(this, i, userId);
+                return;
+            }
+        } catch (Throwable ignore) { }
+        try {
+            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + pkg)));
+        } catch (Throwable ignore) {}
     }
 }

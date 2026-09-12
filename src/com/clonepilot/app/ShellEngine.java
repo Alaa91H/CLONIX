@@ -242,6 +242,53 @@ public final class ShellEngine {
         return new String[]{pkg, cls};
     }
 
+    /**
+     * Clear ALL data of pkg in user (official `pm clear --user`, shell-safe).
+     * Only the target user's data is touched.
+     */
+    public static void clearApp(String pkg, int userId) throws Exception {
+        ExecResult r = su("pm", "clear", "--user", String.valueOf(userId), pkg);
+        if (!r.ok || !(r.out.contains("Success") || r.out.contains("cleared"))) {
+            throw new Exception(r.out);
+        }
+    }
+
+    private static final java.util.regex.Pattern SAFE_PKG =
+            java.util.regex.Pattern.compile("[A-Za-z0-9_]+(\\.[A-Za-z0-9_]+)+");
+
+    /**
+     * Clear cache (+code_cache) of pkg in user via root rm.
+     * STRICT path guard: only /data/user/<id>/<pkg>/{cache,code_cache}/*,
+     * anything else refuses. Non-destructive (temp files regenerate).
+     */
+    public static void rmCache(String pkg, int userId) throws Exception {
+        if (userId < 0 || !SAFE_PKG.matcher(pkg).matches()) {
+            throw new SecurityException("refused unsafe path: " + pkg + "/" + userId);
+        }
+        String base = "/data/user/" + userId + "/" + pkg;
+        ExecResult r = su("sh", "-c",
+            "rm -rf '" + base + "/cache/'* '" + base + "/code_cache/'* && echo CLEARED");
+        if (!r.ok || !r.out.contains("CLEARED")) throw new Exception(r.out);
+    }
+
+    /** Resolve App-Details Settings component for pkg in user (may be null). */
+    public static String resolveAppDetails(String pkg, int userId) {
+        try {
+            ExecResult r = su("cmd", "package", "resolve-activity",
+                    "--user", String.valueOf(userId), "--brief",
+                    "-a", "android.settings.APPLICATION_DETAILS_SETTINGS",
+                    "-d", "package:" + pkg);
+            if (!r.ok) return null;
+            for (String line : r.out.split("\n")) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("priority=")
+                        || line.startsWith("No activity")) continue;
+                if (line.contains("/")) return line;
+            }
+            return null;
+        } catch (Throwable t) { return null; }
+    }
+
     /** Best-effort: is `su` grant present (non-blocking short probe)? */
     public static boolean hasRoot() {
         try {

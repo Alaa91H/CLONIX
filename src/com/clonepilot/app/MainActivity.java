@@ -60,6 +60,14 @@ public class MainActivity extends Activity {
         MaterialToolbar bar = findViewById(R.id.toolbar);
         bar.setTitle(R.string.app_name);
         bar.setSubtitle(R.string.app_subtitle);
+        bar.inflateMenu(R.menu.main_menu);
+        bar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.menu_badge_global) {
+                showBadgeDialog(null, null);
+                return true;
+            }
+            return false;
+        });
         list = findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AppAdapter(this);
@@ -477,7 +485,7 @@ public class MainActivity extends Activity {
         View v = LayoutInflater.from(this).inflate(R.layout.dialog_rename, null);
         TextInputEditText name = v.findViewById(R.id.rename);
         name.setText(cl.nickname == null ? "" : cl.nickname);
-        name.setHint(cloneTitle(row, cl));
+        // Generic hint only: showing the current name as hint too duplicates it.
         new MaterialAlertDialogBuilder(this)
             .setTitle(R.string.rename)
             .setView(v)
