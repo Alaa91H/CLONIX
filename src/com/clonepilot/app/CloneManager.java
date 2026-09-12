@@ -364,6 +364,8 @@ public class CloneManager {
     }
 
     public static void deleteClone(Context c, CloneDatabase db, String pkg, int userId) {
+        // Remove its home shortcut(s) first so no dead icons remain.
+        try { CloneShortcuts.unpin(c, pkg, userId); } catch (Throwable ignore) { }
         uninstallAsUser(c, pkg, userId);
         db.remove(pkg, userId);
         // If secondary user now empty, remove the whole user to free /data/user/<id>

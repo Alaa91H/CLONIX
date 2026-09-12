@@ -37,6 +37,55 @@ public class DualBadgeUtil {
         return draw(c, base, slotIndex, style, color, showNum, pos);
     }
 
+    /**
+     * Home-shortcut composer. The returned bitmap MUST be used with
+     * Icon.createWithAdaptiveBitmap: plain bitmaps make launchers wrap the
+     * icon in a white adaptive shape (the "white frame" bug). Badge is drawn
+     * smaller and slightly inward so circle/squircle masks don't clip it.
+     */
+    public static Bitmap shortcutBitmap(Context c, Drawable base,
+                                        int slotIndex, String style,
+                                        int color, boolean showNum, String pos) {
+        int size = 192;
+        Bitmap bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(bmp);
+        if (base != null) {
+            base.setBounds(0, 0, size, size);
+            base.draw(cv);
+        }
+        if (BadgeSettings.STYLE_NONE.equals(style)) return bmp;
+        float r = size * 0.17f;
+        float cx = BadgeSettings.POS_BL.equals(pos) ? size * 0.20f : size * 0.80f;
+        float cy = size * 0.80f;
+        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
+        bg.setColor(color);
+        bg.setStyle(Paint.Style.FILL);
+        cv.drawCircle(cx, cy, r, bg);
+        if (BadgeSettings.STYLE_NUMBER.equals(style)) {
+            drawNumber(cv, cx, cy, r, slotIndex);
+        } else {
+            Paint ring = new Paint(Paint.ANTI_ALIAS_FLAG);
+            ring.setColor(0xFFFFFFFF);
+            ring.setStyle(Paint.Style.STROKE);
+            ring.setStrokeWidth(r * 0.14f);
+            cv.drawCircle(cx - r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
+            cv.drawCircle(cx + r * 0.22f, cy - r * 0.12f, r * 0.34f, ring);
+            if (showNum) drawNumber(cv, cx, cy + r * 0.30f, r * 0.60f, slotIndex);
+        }
+        return bmp;
+    }
+
+    /** Shortcut bitmap honoring this clone's effective badge. */
+    public static Bitmap shortcutBitmapForClone(Context c, Drawable base,
+                                               CloneDatabase.Clone cl) {
+        BadgeSettings s = new BadgeSettings(c);
+        String style = cl.badgeStyle != null ? cl.badgeStyle : s.style();
+        int color = cl.badgeColor != -1 ? cl.badgeColor : s.color();
+        boolean showNum = cl.badgeShowNum != -1 ? cl.badgeShowNum == 1 : s.showNumber();
+        String pos = cl.badgePos != null ? cl.badgePos : s.position();
+        return shortcutBitmap(c, base, cl.slotIndex, style, color, showNum, pos);
+    }
+
     public static Drawable badge(Context c, Drawable base, int slotIndex, BadgeSettings s) {
         if (s == null || !s.enabled()) return base;
         return draw(c, base, slotIndex, s.style(), s.color(), s.showNumber(), s.position());

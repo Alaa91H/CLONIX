@@ -72,8 +72,8 @@ public class MainActivity extends Activity {
         });
         findViewById(R.id.btn_storage).setOnClickListener(v ->
             startActivity(new Intent(this, StorageActivity.class)));
-        findViewById(R.id.btn_badge).setOnClickListener(v -> showBadgeDialog());
         checkEngine();
+        CloneKeepAliveJob.schedule(this);
         reload();
     }
 
@@ -152,15 +152,38 @@ public class MainActivity extends Activity {
         return rows;
     }
 
-    private void showBadgeDialog() {
-        showBadgeDialog(null, null);
-    }
-
     /**
      * Badge editor with LIVE preview.
      * @param row app row for the preview base icon (null = global: app's own icon).
      * @param cl target clone, or null to edit the GLOBAL defaults.
      */
+    /** Push badge/rename changes into already-pinned home shortcuts. */
+    private void refreshPinnedForPkg(String pkg) {
+        new Thread(() -> {
+            try {
+                Drawable base = pm.getApplicationIcon(pkg);
+                String label;
+                try { label = String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0))); }
+                catch (Throwable t) { label = pkg; }
+                for (CloneDatabase.Clone cl : db.listForPkg(pkg)) {
+                    String title = (cl.nickname != null && !cl.nickname.isEmpty())
+                        ? cl.nickname : (label + " " + cl.slotIndex);
+                    CloneShortcuts.refresh(this, title, base, cl);
+                }
+            } catch (Throwable ignore) { }
+        }).start();
+    }
+
+    private void refreshAllPinned() {
+        new Thread(() -> {
+            try {
+                java.util.Set<String> pkgs = new java.util.HashSet<>();
+                for (CloneDatabase.Clone cl : db.listAll()) pkgs.add(cl.pkg);
+                for (String p : pkgs) refreshPinnedForPkg(p);
+            } catch (Throwable ignore) { }
+        }).start();
+    }
+
     private void showBadgeDialog(Row row, CloneDatabase.Clone cl) {
         boolean perClone = cl != null;
         BadgeSettings s = new BadgeSettings(this);
@@ -245,10 +268,12 @@ public class MainActivity extends Activity {
                     s.setShowNumber(sh);
                     s.setColor(co);
                     s.setPosition(po);
+                    refreshAllPinned();
                 } else {
                     new Thread(() -> {
                         db.updateBadge(cl.pkg, cl.userId, st, co, sh ? 1 : 0, po);
                         runOnUiThread(this::reload);
+                        refreshPinnedForPkg(cl.pkg);
                     }).start();
                 }
                 Toast.makeText(this, R.string.badge_saved, Toast.LENGTH_LONG).show();
@@ -259,6 +284,7 @@ public class MainActivity extends Activity {
             bld.setNeutralButton(R.string.badge_use_global, (d, w) -> new Thread(() -> {
                 db.clearBadge(cl.pkg, cl.userId);
                 runOnUiThread(this::reload);
+                refreshPinnedForPkg(cl.pkg);
             }).start());
         }
         bld.show();
@@ -297,6 +323,7 @@ public class MainActivity extends Activity {
                 if (userId >= 0) {
                     Toast.makeText(this, getString(R.string.clone_created, db.listForPkg(row.ai.packageName).size(), row.label), Toast.LENGTH_LONG).show();
                     reload();
+                    autoPin(row, userId);
                     CloneManager.launchClone(this, row.ai.packageName, userId);
                 } else {
                     Toast.makeText(this, R.string.not_cloneable, Toast.LENGTH_LONG).show();
@@ -321,6 +348,7 @@ public class MainActivity extends Activity {
             v.findViewById(R.id.spinner);
         ImageView selIcon = v.findViewById(R.id.selected_icon);
         TextView selName = v.findViewById(R.id.selected_name);
+        MaterialButton btnOpen = v.findViewById(R.id.btn_open);
         MaterialButton btnShortcut = v.findViewById(R.id.btn_shortcut);
         MaterialButton btnBadgeOne = v.findViewById(R.id.btn_badge_one);
         MaterialButton btnRename = v.findViewById(R.id.btn_rename);
@@ -349,6 +377,11 @@ public class MainActivity extends Activity {
         btnNew.setOnClickListener(x -> {
             if (dlg[0] != null) dlg[0].dismiss();
             showCloneDialog(row);
+        });
+        btnOpen.setOnClickListener(x -> {
+            if (dlg[0] != null) dlg[0].dismiss();
+            CloneDatabase.Clone cl = row.clones.get(sel[0]);
+            CloneManager.launchClone(this, cl.pkg, cl.userId);
         });
         btnShortcut.setOnClickListener(x -> createShortcut(row, row.clones.get(sel[0])));
         btnBadgeOne.setOnClickListener(x -> {
@@ -430,42 +463,27 @@ public class MainActivity extends Activity {
                 String nn = name.getText() == null ? "" : name.getText().toString().trim();
                 db.updateNickname(cl.pkg, cl.userId, nn);
                 runOnUiThread(this::reload);
+                refreshPinnedForPkg(cl.pkg);
             }).start())
             .setNegativeButton(R.string.cancel, null)
             .show();
     }
 
     private void createShortcut(Row row, CloneDatabase.Clone cl) {
-        try {
-            android.content.pm.ShortcutManager sm = getSystemService(android.content.pm.ShortcutManager.class);
-            if (sm != null && !sm.isRequestPinShortcutSupported()) {
-                Toast.makeText(this, R.string.shortcut_unsupported, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String title = cloneTitle(row, cl);
-            Drawable badged = DualBadgeUtil.badgeForClone(this, row.icon, cl);
-            android.graphics.Bitmap bmp = drawableToBitmap(badged);
-            android.graphics.Bitmap scaled = android.graphics.Bitmap.createScaledBitmap(bmp, 192, 192, true);
-            android.content.pm.ShortcutInfo si = new android.content.pm.ShortcutInfo.Builder(this, "clone_" + cl.pkg + "_" + cl.userId)
-                .setShortLabel(title)
-                .setIcon(android.graphics.drawable.Icon.createWithBitmap(scaled))
-                .setIntent(CloneLauncherTrampoline.shortcutIntent(cl.pkg, cl.userId))
-                .build();
-            sm.requestPinShortcut(si, null);
-        } catch (Throwable t) {
-            Toast.makeText(this, String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
-        }
+        CloneShortcuts.pin(this, cloneTitle(row, cl), row.icon, cl);
+        Toast.makeText(this, R.string.create_shortcut, Toast.LENGTH_SHORT).show();
     }
 
-    private static android.graphics.Bitmap drawableToBitmap(Drawable d) {
-        if (d instanceof android.graphics.drawable.BitmapDrawable)
-            return ((android.graphics.drawable.BitmapDrawable) d).getBitmap();
-        int s = 192;
-        android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(s, s, android.graphics.Bitmap.Config.ARGB_8888);
-        android.graphics.Canvas c = new android.graphics.Canvas(b);
-        d.setBounds(0, 0, s, s);
-        d.draw(c);
-        return b;
+    /** Auto-pin right after a clone is created (system asks one confirm tap). */
+    private void autoPin(Row row, int userId) {
+        try {
+            for (CloneDatabase.Clone cl : db.listForPkg(row.ai.packageName)) {
+                if (cl.userId == userId) {
+                    CloneShortcuts.pin(this, cloneTitle(row, cl), row.icon, cl);
+                    break;
+                }
+            }
+        } catch (Throwable ignore) { }
     }
 
     class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {

@@ -26,30 +26,14 @@
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_storage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_storage"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/storage_button"
-            style="@style/Widget.Material3.Button.TonalButton" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_badge"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/badge_button"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-    </LinearLayout>
+        android:layout_marginBottom="8dp"
+        android:text="@string/storage_button"
+        style="@style/Widget.Material3.Button.TonalButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"

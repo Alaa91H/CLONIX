@@ -16,7 +16,10 @@ public class BootReceiver extends BroadcastReceiver {
             final BroadcastReceiver.PendingResult pr = goAsync();
             final Context app = c.getApplicationContext();
             new Thread(() -> {
-                try { CloneManager.startAllClonesInBackground(app); }
+                try {
+                    CloneKeepAliveJob.schedule(app);
+                    CloneManager.startAllClonesInBackground(app);
+                }
                 catch (Throwable t) { Log.w("ClonePilot", "boot start failed", t); }
                 finally { try { pr.finish(); } catch (Throwable ignore) { } }
             }).start();

@@ -24,6 +24,9 @@ public class PackageCleanupReceiver extends BroadcastReceiver {
         try {
             // Only cleanup when removed for owner (our receiver runs as owner/system)
             CloneDatabase db = new CloneDatabase(c);
+            for (CloneDatabase.Clone cl : db.listForPkg(pkg)) {
+                try { CloneShortcuts.unpin(c, cl.pkg, cl.userId); } catch (Throwable ignore) { }
+            }
             if (!db.listForPkg(pkg).isEmpty()) {
                 db.removeAllForPkg(pkg);
             }
