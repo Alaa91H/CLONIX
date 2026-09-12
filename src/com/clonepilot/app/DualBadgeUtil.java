@@ -66,11 +66,6 @@ public class DualBadgeUtil {
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
         bg.setColor(color);
         bg.setStyle(Paint.Style.FILL);
-        Paint edge = new Paint(Paint.ANTI_ALIAS_FLAG);
-        edge.setColor(0x66000000);
-        edge.setStyle(Paint.Style.STROKE);
-        edge.setStrokeWidth(Math.max(2f, r * 0.08f));
-        cv.drawCircle(cx, cy, r + edge.getStrokeWidth() / 2f, edge);
         cv.drawCircle(cx, cy, r, bg);
         if (BadgeSettings.STYLE_NUMBER.equals(style)) {
             drawNumber(cv, cx, cy, r, slotIndex);

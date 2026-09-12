@@ -201,7 +201,10 @@ public final class ShellEngine {
     }
 
     public static void startActivityAsUser(String component, int userId) throws Exception {
-        ExecResult r = su("am", "start", "--user", String.valueOf(userId), "-n", component);
+        // FLAG_ACTIVITY_NEW_TASK like launcher taps: clone gets its own task,
+        // never mixed with the manager app's task.
+        ExecResult r = su("am", "start", "--user", String.valueOf(userId),
+                "-f", "0x10000000", "-n", component);
         // NOTE: `am start` prints "Starting:" even on its way to an error line,
         // so success requires the absence of "Error".
         if ((!r.ok && !r.out.contains("Starting:")) || r.out.contains("Error")) {

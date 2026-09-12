@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-/** Transparent trampoline so a Home shortcut can open pkg in the right clone user. */
+/** Transparent trampoline so a Home shortcut opens ONLY its clone. */
 public class CloneLauncherTrampoline extends Activity {
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         Intent i = getIntent();
         final String pkg = i == null ? null : i.getStringExtra("extra_pkg");
         final int userId = i == null ? -1 : i.getIntExtra("extra_userId", -1);
+        // Immediate feedback so the tap never feels dead.
+        try {
+            android.widget.Toast.makeText(this, R.string.opening_clone,
+                android.widget.Toast.LENGTH_SHORT).show();
+        } catch (Throwable ignore) { }
         // Launch off-main-thread (user start + resolve may take seconds).
         // Dead clones (user removed externally) unpin themselves with feedback.
         new Thread(() -> {
@@ -30,7 +35,11 @@ public class CloneLauncherTrampoline extends Activity {
                     }
                 }
             } catch (Throwable ignore) {}
-            runOnUiThread(this::finish);
+            runOnUiThread(() -> {
+                // Leave NO task trace: only the clone stays open.
+                try { finishAndRemoveTask(); }
+                catch (Throwable t) { finish(); }
+            });
         }).start();
     }
 
