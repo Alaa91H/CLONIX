@@ -67,7 +67,8 @@ public class CloneManager {
         return out;
     }
 
-    private static boolean isOursName(String name) {
+    /** Ours by container name (our containers only, never foreign work profiles). */
+    public static boolean isOursName(String name) {
         return name != null && (name.equals(PROFILE_NAME)
                 || name.equals(CLONE_PROFILE_NAME)
                 || name.startsWith(SECONDARY_PREFIX));

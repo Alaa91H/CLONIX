@@ -50,6 +50,8 @@ public class MainActivity extends Activity {
         String label;
         Drawable icon;
         List<CloneDatabase.Clone> clones = new ArrayList<>();
+        /** Installed in our users but not tracked in DB (external/native clones). */
+        List<Integer> orphanUserIds = new ArrayList<>();
     }
 
     @Override protected void onCreate(Bundle b) {
@@ -151,6 +153,35 @@ public class MainActivity extends Activity {
             r.clones.add(cl);
         }
         List<Row> rows = new ArrayList<>(map.values());
+        // Adopt orphans: clones living in our users but missing from DB
+        // (created externally, or DB lost on reinstall). Listed for one-tap adopt.
+        try {
+            java.util.Set<String> tracked = new java.util.HashSet<>();
+            for (Row r : rows) for (CloneDatabase.Clone cl : r.clones) tracked.add(cl.pkg + "#" + cl.userId);
+            for (SysApi.User u : SysApi.safeGetUsers(this)) {
+                if (u.id == 0 || !CloneManager.isOursName(u.name)) continue;
+                for (String pkg : SysApi.getLaunchablePackages(this, u.id)) {
+                    if (tracked.contains(pkg + "#" + u.id)) continue;
+                    try {
+                        ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
+                        if (!CloneManager.isCloneable(this, ai)) continue;
+                    } catch (Throwable t) { continue; }
+                    Row r = map.get(pkg);
+                    if (r == null) {
+                        try {
+                            ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
+                            r = new Row();
+                            r.ai = ai;
+                            r.label = String.valueOf(pm.getApplicationLabel(ai));
+                            r.icon = pm.getApplicationIcon(ai);
+                            map.put(pkg, r);
+                            rows.add(r);
+                        } catch (Throwable t) { continue; }
+                    }
+                    if (!r.orphanUserIds.contains(u.id)) r.orphanUserIds.add(u.id);
+                }
+            }
+        } catch (Throwable t) { android.util.Log.w("ClonePilot", "orphan scan failed", t); }
         Collections.sort(rows, (a, c) -> {
             if (!a.clones.isEmpty() && c.clones.isEmpty()) return -1;
             if (a.clones.isEmpty() && !c.clones.isEmpty()) return 1;
@@ -369,8 +400,33 @@ public class MainActivity extends Activity {
         }).start();
     }
 
+    /** Adopt externally-created clones (native page, adb, lost DB) into tracking. */
+    void adoptOrphans(Row row) {
+        Toast.makeText(this, "…", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            int n = 0;
+            for (int uid : new ArrayList<>(row.orphanUserIds)) {
+                CloneDatabase.Clone cl = new CloneDatabase.Clone();
+                cl.pkg = row.ai.packageName; cl.userId = uid;
+                cl.slotIndex = db.nextSlotIndex(row.ai.packageName);
+                cl.nickname = "";
+                cl.separateContacts = true;
+                try { db.add(cl); n++; } catch (Throwable ignore) { }
+            }
+            final int done = n;
+            runOnUiThread(() -> {
+                Toast.makeText(this, getString(R.string.adopted, done), Toast.LENGTH_LONG).show();
+                reload();
+            });
+        }).start();
+    }
+
     private void showManageDialog(Row row) {
-        if (row.clones.isEmpty()) { showCloneDialog(row); return; }
+        if (row.clones.isEmpty()) {
+            if (!row.orphanUserIds.isEmpty()) { adoptOrphans(row); return; }
+            showCloneDialog(row);
+            return;
+        }
         View v = LayoutInflater.from(this).inflate(R.layout.dialog_manage, null);
         ImageView appIcon = v.findViewById(R.id.app_icon);
         TextView appName = v.findViewById(R.id.app_name);
@@ -434,6 +490,7 @@ public class MainActivity extends Activity {
                         CloneManager.deleteClone(this, db, cl.pkg, cl.userId);
                         runOnUiThread(() -> {
                             Toast.makeText(this, R.string.clone_deleted, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, R.string.delete_pin_hint, Toast.LENGTH_LONG).show();
                             reload();
                         });
                     }).start();
@@ -543,10 +600,23 @@ public class MainActivity extends Activity {
                 h.icon.setImageDrawable(DualBadgeUtil.badgeForClone(MainActivity.this, r.icon, r.clones.get(0)));
             else h.icon.setImageDrawable(r.icon);
             h.name.setText(r.label);
-            h.sub.setText(r.ai.packageName + " • " + getString(R.string.clones_count, r.clones.size()));
-            h.clone.setText(r.clones.isEmpty() ? getString(R.string.clone)
-                : getString(R.string.clone_n, r.clones.size() + 1));
-            h.clone.setOnClickListener(v -> showCloneDialog(r));
+            if (!r.clones.isEmpty()) {
+                h.sub.setText(r.ai.packageName + " • " + getString(R.string.clones_count, r.clones.size()));
+            } else if (!r.orphanUserIds.isEmpty()) {
+                h.sub.setText(getString(R.string.orphan_found, r.orphanUserIds.size()));
+            } else {
+                h.sub.setText(r.ai.packageName);
+            }
+            if (!r.clones.isEmpty()) {
+                h.clone.setText(getString(R.string.clone_n, r.clones.size() + 1));
+                h.clone.setOnClickListener(v -> showCloneDialog(r));
+            } else if (!r.orphanUserIds.isEmpty()) {
+                h.clone.setText(R.string.adopt);
+                h.clone.setOnClickListener(v -> adoptOrphans(r));
+            } else {
+                h.clone.setText(getString(R.string.clone));
+                h.clone.setOnClickListener(v -> showCloneDialog(r));
+            }
             if (!r.clones.isEmpty()) {
                 h.open.setVisibility(View.VISIBLE);
                 h.open.setOnClickListener(v -> showManageDialog(r));

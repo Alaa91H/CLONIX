@@ -297,6 +297,21 @@ public final class ShellEngine {
         } catch (Throwable t) { return false; }
     }
 
+    /** All package names installed for user (DIRECT: reflection-free shell path). */
+    public static List<String> listPackages(int userId) throws Exception {
+        ExecResult r = su("pm", "list", "packages", "--user", String.valueOf(userId));
+        if (!r.ok) throw new Exception(r.out);
+        List<String> out = new ArrayList<>();
+        for (String line : r.out.split("\n")) {
+            line = line.trim();
+            if (line.startsWith("package:")) {
+                String pkg = line.substring("package:".length()).trim();
+                if (!pkg.isEmpty()) out.add(pkg);
+            }
+        }
+        return out;
+    }
+
     /** Unused import guard: keep UserHandle referenced for callers. */
     @SuppressWarnings("unused")
     private static UserHandle unused(UserHandle u) { return u; }

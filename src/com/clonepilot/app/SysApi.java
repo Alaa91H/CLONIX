@@ -255,6 +255,35 @@ public final class SysApi {
         }
     }
 
+    /**
+     * Launchable package names installed for userId.
+     * DIRECT: public LauncherApps API (ROM builds with cross-user access).
+     * ROOT fallback: `pm list packages --user` filtered to launcher apps.
+     */
+    public static List<String> getLaunchablePackages(Context c, int userId) {
+        // DIRECT first (no su needed on capable builds).
+        try {
+            android.content.pm.LauncherApps la =
+                (android.content.pm.LauncherApps) c.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+            UserHandle uh = userHandleOf(userId);
+            List<String> out = new ArrayList<>();
+            for (android.content.pm.LauncherActivityInfo ai : la.getActivityList(null, uh)) {
+                String pkg = ai.getApplicationInfo().packageName;
+                if (!out.contains(pkg)) out.add(pkg);
+            }
+            return out;
+        } catch (Throwable t) {
+            Log.i(TAG, "LauncherApps per-user failed, ROOT fallback", t);
+        }
+        // ROOT fallback: all packages, caller filters via isCloneable().
+        try {
+            return ShellEngine.listPackages(userId);
+        } catch (Throwable t) {
+            Log.w(TAG, "listPackages failed u" + userId, t);
+            return Collections.emptyList();
+        }
+    }
+
     /** Field read helper for hidden UserInfo-shaped objects (ROM paths). */
     static int idOf(Object uinfo) throws Exception {
         Field f = uinfo.getClass().getField("id");

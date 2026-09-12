@@ -97,13 +97,37 @@ public class CloneTestReceiver extends BroadcastReceiver {
         } else if ("launch".equals(op) && pkg != null && userId >= 0) {
             boolean ok = CloneManager.launchClone(c, pkg, userId);
             return (ok ? "launched:" : "launch FAILED:") + pkg + ":u" + userId;
-        } else if ("delete".equals(op) && pkg != null && userId >= 0) {
-            CloneManager.deleteClone(c, db, pkg, userId);
-            return "deleted:" + pkg + ":u" + userId;
-        } else if ("clearcache".equals(op) && pkg != null && userId >= 0) {
-            boolean ok = CloneStorageHelper.clearCacheAsUser(c, pkg, userId);
-            return (ok ? "cache-cleared:" : "cache FAILED:") + pkg + ":u" + userId;
-        } else if ("cleardata".equals(op) && pkg != null && userId >= 0) {
+            } else if ("delete".equals(op) && pkg != null && userId >= 0) {
+                CloneManager.deleteClone(c, db, pkg, userId);
+                return "deleted:" + pkg + ":u" + userId;
+            } else if ("adopt".equals(op) && pkg != null) {
+                int n = 0;
+                for (SysApi.User u : SysApi.safeGetUsers(c)) {
+                    if (u.id == 0 || !CloneManager.isOursName(u.name)) continue;
+                    boolean tracked = false;
+                    for (CloneDatabase.Clone cl : db.listForPkg(pkg)) {
+                        if (cl.userId == u.id) { tracked = true; break; }
+                    }
+                    if (tracked) continue;
+                    boolean installed = false;
+                    try {
+                        android.content.pm.PackageManager pm = c.getPackageManager();
+                        SysApi.getPackageInfoAsUser(pm, pkg, u.id);
+                        installed = true;
+                    } catch (Throwable ignore) { }
+                    if (!installed) continue;
+                    CloneDatabase.Clone cl = new CloneDatabase.Clone();
+                    cl.pkg = pkg; cl.userId = u.id;
+                    cl.slotIndex = db.nextSlotIndex(pkg);
+                    cl.nickname = "";
+                    cl.separateContacts = true;
+                    try { db.add(cl); n++; } catch (Throwable ignore) { }
+                }
+                return "adopted:" + pkg + ":" + n;
+            } else if ("clearcache".equals(op) && pkg != null && userId >= 0) {
+                boolean ok = CloneStorageHelper.clearCacheAsUser(c, pkg, userId);
+                return (ok ? "cache-cleared:" : "cache FAILED:") + pkg + ":u" + userId;
+            } else if ("cleardata".equals(op) && pkg != null && userId >= 0) {
             boolean ok = CloneStorageHelper.clearDataAsUser(c, pkg, userId);
             return (ok ? "data-cleared:" : "data FAILED:") + pkg + ":u" + userId;
         } else {
