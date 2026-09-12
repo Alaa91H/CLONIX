@@ -1,0 +1,29 @@
+// DualMessenger - Samsung-like app cloner for Evolution-X (cnb / Android 17)
+// System privileged app. Same APK, N copies via hidden users.
+// Slot 1 = Managed Profile (concurrent, native notifications)
+// Slot 2..N = Secondary users started in background (no framework patch needed)
+// Optional framework patch allows N managed profiles for perfect notifications.
+
+android_app {
+    name: "DualMessenger",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    platform_apis: true,
+    privileged: true,
+    system_ext_specific: false,
+    certificate: "platform",
+    required: ["privapp-permissions-com.evolution.dualmessenger"],
+    optimize: {
+        enabled: true,
+        shrink: true,
+    },
+    apex_available: ["//apex_available:platform"],
+    min_sdk_version: "34",
+    target_sdk_version: "36",
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-com.evolution.dualmessenger",
+    src: "etc/privapp-permissions-com.evolution.dualmessenger.xml",
+    sub_dir: "permissions",
+}

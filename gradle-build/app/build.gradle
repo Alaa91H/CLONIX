@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.evolution.dualmessenger'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.evolution.dualmessenger'
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName '1.0-ksu'
+    }
+
+    // Single source of truth: reuse the AOSP/ROM layout (no duplication).
+    sourceSets {
+        main {
+            manifest.srcFile '../../AndroidManifest.xml'
+            java.srcDirs = ['../../src']
+            res.srcDirs = ['../../res']
+        }
+    }
+
+    buildTypes {
+        debug {
+            // debuggable=true keeps hidden-API reflection working smoothly
+            // on userdebug builds; harmless on user builds.
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // Zero dependencies on purpose: framework APIs + reflection only.
+}

@@ -1,0 +1,18 @@
+// Gradle root project for cloud builds (GitHub Actions).
+// The SAME sources also build inside the ROM tree via Android.bp.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "DualMessenger"
+include(":app")

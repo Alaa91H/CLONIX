@@ -1,0 +1,32 @@
+<!-- EvoX Settings integration: launch DualMessenger from Settings search + dashboard.
+Copy ONE file into Settings, no Java duplication (Settings just fires intent).
+
+1) In packages/apps/Settings/res/xml/evolution_dashboard.xml (or equivalent cnb file) add:
+
+    <Preference
+        android:key="dual_messenger"
+        android:title="@string/dual_messenger_title"
+        android:summary="@string/dual_messenger_summary"
+        android:icon="@drawable/ic_dual_messenger"
+        android:fragment="" >
+        <intent android:action="com.evolution.dualmessenger.OPEN" />
+    </Preference>
+
+2) In packages/apps/Settings/res/values/evolution_strings.xml add:
+
+    <string name="dual_messenger_title">Dual Messenger</string>
+    <string name="dual_messenger_summary">نسخة ثانية ومتعددة بنمط سامسونج</string>
+
+3) Copy ic_dual_messenger.xml from this folder to
+   packages/apps/Settings/res/drawable/ic_dual_messenger.xml
+
+4) For Settings search indexing (optional, cnb uses SearchIndexProvider):
+   Add to your dashboard fragment's SEARCH_INDEX_DATA_PROVIDER the key "dual_messenger".
+   No controller needed because we use <intent>, not fragment.
+
+Why intent and not fragment? Keeps DualMessenger standalone + reachable from Settings.
+Both requirements (مستقلة + مدمجة) are satisfied with zero code duplication.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- snippet only, see instructions above -->
+</PreferenceScreen>

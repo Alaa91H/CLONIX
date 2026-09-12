@@ -1,0 +1,6 @@
+id=dualmessenger
+name=DualMessenger (EvoX Clone)
+version=1.0-ksu
+versionCode=1
+author=EvoX-DualMessenger
+description=Samsung-style app cloner (N copies, numbered badges). Installs as priv-app with allowlisted permissions. Works on Magisk + KernelSU / KSU Next.
