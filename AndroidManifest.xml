@@ -94,6 +94,15 @@
             </intent-filter>
         </receiver>
 
+        <!-- Pin confirmation callback (system-fired only). -->
+        <receiver
+            android:name=".PinResultReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.clonepilot.app.PIN_RESULT" />
+            </intent-filter>
+        </receiver>
+
         <!-- Headless test hook: shell/root (adb) only, enforced in code. -->
         <receiver
             android:name=".CloneTestReceiver"

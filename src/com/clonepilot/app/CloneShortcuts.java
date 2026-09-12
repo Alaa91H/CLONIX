@@ -57,7 +57,18 @@ public final class CloneShortcuts {
             ShortcutManager s = sm(c);
             if (s == null) return;
             if (!s.isRequestPinShortcutSupported()) return;
-            s.requestPinShortcut(build(c, title, baseIcon, cl), null);
+            android.app.PendingIntent cb = null;
+            try {
+                Intent cbIntent = new Intent(c, PinResultReceiver.class)
+                    .setAction(PinResultReceiver.ACTION);
+                int flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+                if (android.os.Build.VERSION.SDK_INT >= 31) flags |= 0x04000000; // FLAG_IMMUTABLE
+                cb = android.app.PendingIntent.getBroadcast(c, cl.userId, cbIntent, flags);
+            } catch (Throwable t) {
+                Log.w(TAG, "pin callback build failed", t);
+            }
+            s.requestPinShortcut(build(c, title, baseIcon, cl),
+                cb == null ? null : cb.getIntentSender());
         } catch (Throwable t) {
             Log.w(TAG, "pin failed", t);
         }

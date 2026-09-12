@@ -23,7 +23,7 @@
     <string name="clone_deleted">تم حذف النسخة وبياناتها</string>
     <string name="original_removed_cleanup">تم مسح الأصل، تم تنظيف النسخ تلقائياً</string>
     <string name="disclaimer_title">تنبيه</string>
-    <string name="disclaimer">سيتم إنشاء نسخة بنفس التطبيق ببيانات منفصلة تماماً. النسخ تشارك نفس ملفات التطبيق فلا تستهلك مساحة مضاعفة. مسح التطبيق الأصلي يمسح النسخ.</string>
+    <string name="disclaimer">سيتم إنشاء نسخة ببيانات منفصلة تشارك ملفات التطبيق نفسه.</string>
     <string name="confirm">تأكيد وتثبيت</string>
     <string name="cancel">إلغاء</string>
     <string name="storage_dual">التخزين الداخلي (النسخ)</string>
@@ -74,6 +74,7 @@
     <string name="manage_rename">إعادة تسمية: %1$s</string>
     <string name="manage_delete">حذف: %1$s</string>
     <string name="shortcut_unsupported">اللانشر لا يدعم التثبيت</string>
+    <string name="shortcut_pinned">تم التثبيت على الرئيسية</string>
     <string name="shortcut_throttled">بلغ النظام حد التحديث اليومي — أعد تثبيت الأيقونة يدوياً من التطبيق</string>
     <string name="clone_gone">النسخة غير متوفرة — تمت إزالة سجلها وأيقونتها</string>
     <string name="delete_pin_hint">إن بقيت أيقونتها على الرئيسية اسحبها للإزالة (قيد النظام)</string>

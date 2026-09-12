@@ -435,7 +435,6 @@ public class MainActivity extends Activity {
         android.widget.AutoCompleteTextView spinner =
             v.findViewById(R.id.spinner);
         ImageView selIcon = v.findViewById(R.id.selected_icon);
-        TextView selName = v.findViewById(R.id.selected_name);
         MaterialButton btnOpen = v.findViewById(R.id.btn_open);
         MaterialButton btnShortcut = v.findViewById(R.id.btn_shortcut);
         MaterialButton btnBadgeOne = v.findViewById(R.id.btn_badge_one);
@@ -455,7 +454,6 @@ public class MainActivity extends Activity {
             if (sel[0] < 0 || sel[0] >= row.clones.size()) sel[0] = 0;
             CloneDatabase.Clone cl = row.clones.get(sel[0]);
             selIcon.setImageDrawable(DualBadgeUtil.badgeForClone(MainActivity.this, row.icon, cl));
-            selName.setText(cloneTitle(row, cl));
         };
         spinner.setOnItemClickListener((p, view, pos, id) -> {
             sel[0] = pos;
@@ -513,7 +511,6 @@ public class MainActivity extends Activity {
             openClone(row, row.clones.get(sel[0]));
         };
         selIcon.setOnClickListener(openSel);
-        selName.setOnClickListener(openSel);
     }
 
     /** Dropdown rows: each clone with its saved name + its own customized badge. */
