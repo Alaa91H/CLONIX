@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.evolution.dualmessenger">
-    <!-- NOTE: no sharedUserId on purpose: the KSU priv-app build is NOT
+    package="com.clonepilot.app">
+    <!-- NOTE: no sharedUserId on purpose: the standalone build is NOT
          platform-signed, and android.uid.system requires the platform cert.
-         All powers come from privapp-permissions allowlist instead. -->
+         All powers come from privapp-permissions allowlist / root instead. -->
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.MANAGE_USERS" />
@@ -21,9 +21,10 @@
     <uses-permission android:name="android.permission.ACCESS_SHORTCUTS" />
 
     <application
+        android:name=".CloneApp"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/Theme.DualMessenger"
+        android:theme="@style/Theme.ClonePilot"
         android:directBootAware="true"
         android:allowBackup="false">
 
@@ -35,9 +36,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Entry from EvoX Settings -->
+            <!-- Entry from system Settings -->
             <intent-filter>
-                <action android:name="com.evolution.dualmessenger.OPEN" />
+                <action android:name="com.clonepilot.app.OPEN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -54,7 +55,7 @@
             android:name=".StorageActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.evolution.dualmessenger.STORAGE" />
+                <action android:name="com.clonepilot.app.STORAGE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -98,7 +99,7 @@
             android:name=".CloneTestReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.evolution.dualmessenger.TEST" />
+                <action android:name="com.clonepilot.app.TEST" />
             </intent-filter>
         </receiver>
 

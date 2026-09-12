@@ -5,30 +5,16 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/disclaimer"
-        android:textAppearance="?attr/textAppearanceBodyMedium" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/nickname_hint"
+        android:hint="@string/rename_hint"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nickname"
+            android:id="@+id/rename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/separate_contacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/separate_contacts"
-        android:checked="true" />
 </LinearLayout>

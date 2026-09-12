@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="evo_accent">#FF8A00</color><!-- Samsung-like orange badge -->
-    <color name="bg">#0F1113</color>
-    <color name="card">#1A1E22</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B7BF</color>
-    <style name="Theme.DualMessenger" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:colorAccent">@color/evo_accent</item>
-    </style>
+    <color name="seed">#6750A4</color>
 </resources>

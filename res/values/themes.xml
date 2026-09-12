@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material3 baseline seed (dynamic color overrides on supported devices). -->
+    <style name="Theme.ClonePilot" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/seed</item>
+    </style>
+</resources>

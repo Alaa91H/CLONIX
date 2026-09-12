@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
-    android:padding="16dp">
+    android:background="?attr/colorSurface">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/storage_title"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary" />
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@android:drawable/ic_menu_revert" />
 
     <TextView
         android:id="@+id/summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_secondary"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="12dp" />
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_margin="16dp" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp" />
+        android:clipToPadding="false"
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/storage_empty"
-        android:textColor="@color/text_secondary"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
         android:gravity="center"
         android:visibility="gone"
         android:padding="24dp" />

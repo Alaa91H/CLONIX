@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Evolution-X (cnb / Android 17) repo sync for marble + DualMessenger
+# ROM source sync + ClonePilot module build
 # RUN INSIDE WSL2 Ubuntu (NOT Windows, NOT /mnt/d). AOSP cannot build on NTFS.
 # Usage:  bash repo_sync.sh [WORKDIR]     (default: $HOME/evox17)
 set -e
@@ -44,17 +44,17 @@ for i in 1 2 3 4 5; do
   sleep 60
 done
 
-echo "=== 4) bring DualMessenger sources into tree ==="
+echo "=== 4) bring ClonePilot sources into tree ==="
 WIN_SRC="/mnt/d/EvoX17/packages/apps/DualMessenger"
 if [ -d "$WIN_SRC" ]; then
   rm -rf packages/apps/DualMessenger
   cp -r "$WIN_SRC" packages/apps/DualMessenger
   echo "copied from $WIN_SRC"
 else
-  echo "NOTE: $WIN_SRC not found. Copy your DualMessenger folder to packages/apps/DualMessenger manually."
+  echo "NOTE: $WIN_SRC not found. Copy your project folder to packages/apps/DualMessenger manually."
 fi
 
-echo "=== 5) env + auto lunch + build DualMessenger module only ==="
+echo "=== 5) env + auto lunch + build ClonePilot module only ==="
 source build/envsetup.sh
 COMBO="$(lunch 2>/dev/null | grep -o "lineage_${DEVICE}-[a-z0-9]*-userdebug" | head -n1 || true)"
 if [ -z "$COMBO" ]; then COMBO="lineage_${DEVICE}-userdebug"; fi
@@ -63,6 +63,6 @@ lunch "$COMBO"
 export USE_CCACHE=1
 export CCACHE_COMPRESS=1
 ccache -M 50G -F 0 || true
-m DualMessenger
+m ClonePilot
 
-echo "=== DONE: out/.../system/priv-app/DualMessenger/DualMessenger.apk ==="
+echo "=== DONE: out/.../system/priv-app/ClonePilot/ClonePilot.apk ==="

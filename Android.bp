@@ -1,29 +1,32 @@
-// DualMessenger - Samsung-like app cloner for Evolution-X (cnb / Android 17)
+// ClonePilot - independent app cloner (clone profile + hidden users).
 // System privileged app. Same APK, N copies via hidden users.
-// Slot 1 = Managed Profile (concurrent, native notifications)
-// Slot 2..N = Secondary users started in background (no framework patch needed)
-// Optional framework patch allows N managed profiles for perfect notifications.
+// Slot 1 = Clone profile (concurrent, no work tab).
+// Slot 2..N = Secondary users started in background.
 
 android_app {
-    name: "DualMessenger",
+    name: "ClonePilot",
     srcs: ["src/**/*.java"],
     resource_dirs: ["res"],
+    static_libs: [
+        "com.google.android.material_material",
+        "androidx.recyclerview_recyclerview",
+    ],
     platform_apis: true,
     privileged: true,
     system_ext_specific: false,
     certificate: "platform",
-    required: ["privapp-permissions-com.evolution.dualmessenger"],
+    required: ["privapp-permissions-com.clonepilot.app"],
     optimize: {
         enabled: true,
         shrink: true,
     },
     apex_available: ["//apex_available:platform"],
-    min_sdk_version: "34",
-    target_sdk_version: "36",
+    min_sdk_version: "29",
+    target_sdk_version: "34",
 }
 
 prebuilt_etc {
-    name: "privapp-permissions-com.evolution.dualmessenger",
-    src: "etc/privapp-permissions-com.evolution.dualmessenger.xml",
+    name: "privapp-permissions-com.clonepilot.app",
+    src: "etc/privapp-permissions-com.clonepilot.app.xml",
     sub_dir: "permissions",
 }

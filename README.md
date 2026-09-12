@@ -1,30 +1,28 @@
-# DualMessenger for Evolution-X (cnb)
+# ClonePilot — independent app cloner
 
-نمط Samsung Dual Messenger لكن **بتعدد نسخ N** وبأقل موارد.
+Run multiple isolated copies of any app: same APK shared, separate data,
+numbered badges on the original icons, per-clone storage view.
 
-## الفكرة
-- نفس الـAPK مشترك، كل نسخة = `userId` مخفي مختلف.
-- النسخة 1 = Managed Profile `DualMessenger` (concurrent + إشعارات فورية بدون باتش).
-- النسخ 2..8 = Secondary users `EvoClone_N` مخفيين + `startUserInBackground` + `BootReceiver`.
-- لا تغيير packageName، لا إعادة توقيع، لا Virtualization. التحديث مرة واحدة، التخزين بيانات فقط `/data/user/<id>/`.
+## How it works
+- Copy 1 = clone-profile container `CloneSpace` (hidden, deleted with parent).
+- Copies 2..8 = hidden secondary users `Clone_2…` started in background.
+- Privileges via platform signature (ROM build) or root (standalone build).
 
-## المكونات
-- `src/.../CloneManager.java` : إنشاء slots + installExistingAsUser + launch + separate contacts
-- `CloneDatabase.java` : mapping pkg -> N clones
-- `MainActivity.java` : UI سامسونج + بحث + long-press لإدارة النسخ
-- `DualBadgeUtil.java` : بادج برتقالي مرقم (1..8) بدل شنطة Work
-- `CloneLauncherTrampoline.java` : فتح النسخة من shortcut بدون باتش Launcher
-- `BootReceiver` + `PackageCleanupReceiver` : استمرارية + تنظيف مثل سامسونج
-- `settings_integration/` : دخول من EvoX Settings عبر intent (بدون تكرار كود)
-- `launcher_patch/README` : باتش اختياري للدرج والإشعارات (UX فقط)
-- `INTEGRATION.mk` : سطران في common.mk + overlay + أوامر اختبار
+## Components
+- `src/.../CloneManager.java` : create slots + installExistingAsUser + launch
+- `CloneDatabase.java` : pkg -> N clones (with custom nicknames)
+- `MainActivity.java` : Material3 console + search + badge settings
+- `DualBadgeUtil.java` + `BadgeSettings.java` : original icon + numbered badge
+- `CloneLauncherTrampoline.java` : home shortcuts without launcher patch
+- `StorageActivity.java` : per-clone storage, grouped by original app
+- `settings_integration/` : entry from system Settings via intent
+- `launcher_patch/` : optional Trebuchet/Launcher3 drawer integration
+- `ksu-module/` : root installer (priv-app + allowlist, Magisk/KernelSU)
+- `tools/` : adb test/verify scripts + ROM sync/build scripts
 
-## الدمج
+## ROM integration
 ```
-PRODUCT_PACKAGES += DualMessenger
+PRODUCT_PACKAGES += ClonePilot
 ```
-
-## الحدود
-- حد افتراضي 8 نسخ/تطبيق، 8 slots إجمالي (قابل للتغيير في CloneManager).
-- التطبيقات singleUser والسيستم الداخلية مستبعدة تلقائياً.
-- مسح الأصل يمسح النسخ (مثل سامسونج).
+See INTEGRATION.mk. Standalone: build APK (Gradle locally or GitHub
+Actions) and install normally + grant root, or flash ksu-module.

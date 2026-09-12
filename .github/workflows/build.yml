@@ -1,4 +1,4 @@
-name: Build DualMessenger APK
+name: Build ClonePilot APK
 
 # Push this folder as a GitHub repo root, Actions builds the APK for you.
 # No local SDK, no WSL, no ROM tree needed.
@@ -30,11 +30,11 @@ jobs:
 
       - name: Rename + upload
         run: |
-          cp app/build/outputs/apk/debug/app-debug.apk DualMessenger.apk
-          ls -la DualMessenger.apk
+          cp app/build/outputs/apk/debug/app-debug.apk ClonePilot.apk
+          ls -la ClonePilot.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DualMessenger-apk
-          path: gradle-build/DualMessenger.apk
+          name: ClonePilot-apk
+          path: gradle-build/ClonePilot.apk

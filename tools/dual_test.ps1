@@ -1,4 +1,4 @@
-# DualMessenger - تجربة adb بدون بناء روم (Windows PowerShell)
+# ClonePilot - تجربة adb بدون بناء روم (Windows PowerShell)
 # يحاكي بالضبط ما تفعله CloneManager.java: نفس الـAPK + userId مخفي مختلف
 # الاستخدام:
 #   .\dual_test.ps1 -Action list
@@ -34,20 +34,20 @@ function Get-Users {
 }
 
 function Get-OrCreate-Slot([int]$slot) {
-  # Slot 1 = CLONE profile DualClone (no Work tab, Samsung-like), Slot 2+ = secondary EvoClone_N
+  # Slot 1 = CLONE profile CloneSpace (no Work tab), Slot 2+ = secondary Clone_N
   $users = Shell 'pm list users'
-  if ($slot -eq 1 -and ($users -match 'DualClone')) {
-    $id = ([regex]::Match($users, '\{\s*(\d+):DualClone').Groups[1].Value)
+  if ($slot -eq 1 -and ($users -match 'CloneSpace')) {
+    $id = ([regex]::Match($users, '\{\s*(\d+):CloneSpace').Groups[1].Value)
     if ($id) { Write-Host "Slot1 exists -> user $id"; return [int]$id }
   }
-  $name = if ($slot -eq 1) { 'DualClone' } else { "EvoClone_$slot" }
+  $name = if ($slot -eq 1) { 'CloneSpace' } else { "Clone_$slot" }
   if ($users -match [regex]::Escape($name)) {
     $id = ([regex]::Match($users, '\{\s*(\d+):' + [regex]::Escape($name)).Groups[1].Value)
     if ($id) { Write-Host "$name exists -> user $id"; return [int]$id }
   }
   Write-Host "Creating $name ..."
   if ($slot -eq 1) {
-    $r = Shell 'pm create-user --user-type android.os.usertype.profile.CLONE --profileOf 0 DualClone'
+    $r = Shell 'pm create-user --user-type android.os.usertype.profile.CLONE --profileOf 0 CloneSpace'
     Write-Host $r
   } else {
     $r = Shell "pm create-user $name"
@@ -104,7 +104,7 @@ switch ($Action) {
     $uid = Get-OrCreate-Slot $Slot
     Write-Host (Shell "pm uninstall --user $uid $Pkg")
     Write-Host (Shell "pm list packages --user $uid | findstr $Pkg")
-    Write-Host 'تم. لو كان EvoClone_N فارغاً تماماً احذف اليوزر: pm remove-user <id>'
+    Write-Host 'تم. لو كان Clone_N فارغاً تماماً احذف اليوزر: pm remove-user <id>'
   }
   'cleanup' {
     Get-Users

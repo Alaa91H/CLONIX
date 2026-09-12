@@ -9,15 +9,15 @@ import android.graphics.drawable.Drawable;
 
 /**
  * Numbered bottom-corner badge for clone icons inside the launcher drawer.
- * Mirrors DualMessenger's BadgeSettings defaults (orange rings + number);
- * per-user customization of the badge lives in the DualMessenger app and
+ * Mirrors ClonePilot's BadgeSettings defaults (number badge);
+ * per-user customization of the badge lives in the ClonePilot app and
  * applies to pinned shortcuts. This renderer is the static ROM-side twin
  * for drawer icons (launchers cannot read another app's prefs cheaply).
  *
  * To change the ROM-side look, edit DEFAULT_COLOR / STYLE_RINGS_ONLY here.
  */
 public final class CloneBadge {
-    public static final int DEFAULT_COLOR = 0xFFFF8A00; // Samsung orange
+    public static final int DEFAULT_COLOR = 0xFF6750A4; // baseline primary
     /** false = dual-rings + number (Samsung), true = plain circle + number. */
     public static final boolean STYLE_NUMBER_ONLY = false;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Privileged permission allowlist. Copied to /system/etc/permissions/ -->
 <permissions>
-    <privapp-permissions package="com.evolution.dualmessenger">
+    <privapp-permissions package="com.clonepilot.app">
         <permission name="android.permission.MANAGE_USERS"/>
         <permission name="android.permission.CREATE_USERS"/>
         <permission name="android.permission.INTERACT_ACROSS_USERS"/>

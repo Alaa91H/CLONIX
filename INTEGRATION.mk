@@ -1,18 +1,17 @@
-# DualMessenger ROM integration (Evolution-X cnb)
-# Add to vendor/evolution/config/common.mk or device/<codename>/device.mk:
+# ClonePilot ROM integration
+# Add to vendor/.../config/common.mk or device/<codename>/device.mk:
 
-# PRODUCT_PACKAGES += DualMessenger
+# PRODUCT_PACKAGES += ClonePilot
 
 # Permissions allowlist (privapp):
 # PRODUCT_COPY_FILES += \
-#     packages/apps/DualMessenger/etc/privapp-permissions-com.evolution.dualmessenger.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-com.evolution.dualmessenger.xml
+#     packages/apps/DualMessenger/etc/privapp-permissions-com.clonepilot.app.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-com.clonepilot.app.xml
 
-# Optional overlays to hide Work tab traces and allow more slots:
-# - config_multiuserMaximumUsers = 8 (default 1-4, needed for N clones)
-# - Keep config_enableMultiUserUI=false so EvoClone users stay hidden like Samsung
-#   (users still visible via `pm list users` for debugging)
+# Optional overlays to keep clone users hidden from user switcher:
+# - config_multiuserMaximumUsers = 8 (needed for N clones)
+# - Keep config_enableMultiUserUI=false so Clone_* users stay hidden
 #
-# vendor/evolution/overlay/common/frameworks/base/core/res/res/values/config.xml:
+# vendor/.../overlay/.../frameworks/base/core/res/res/values/config.xml:
 #
 # <resources>
 #   <integer name="config_multiuserMaximumUsers">8</integer>
@@ -21,27 +20,19 @@
 #
 # Build:
 #   source build/envsetup.sh
-#   lunch lineage_<device>-userdebug   # cnb branch
-#   m DualMessenger
-#   adb root && adb remount
-#   adb push $OUT/system/priv-app/DualMessenger/DualMessenger.apk /system/priv-app/DualMessenger/
-#   adb push packages/apps/DualMessenger/etc/privapp-permissions-com.evolution.dualmessenger.xml /system/etc/permissions/
-#   adb reboot
+#   lunch lineage_<device>-userdebug
+#   m ClonePilot
+#
+# Standalone instead (no ROM rebuild):
+#   build APK via gradle-build/ (local Gradle or GitHub Actions),
+#   install normally + grant root, or flash ksu-module/ + reboot.
 #
 # Test without full ROM build (userdebug, rooted):
 #   adb shell pm list users
-#   adb shell pm create-user --profileOf 0 --managed DualMessenger
-#   adb shell pm install-existing --user 11 com.whatsapp
-#   adb shell am start --user 11 -n com.whatsapp/.MainActivity
+#   adb shell pm create-user --user-type android.os.usertype.profile.CLONE --profileOf 0 CloneSpace
+#   adb shell pm install-existing --user <id> com.whatsapp
+#   adb shell am start --user <id> -n com.whatsapp/.MainActivity
 #
 # Storage check (proof of minimal usage):
-#   adb shell du -sh /data/app/*whatsapp* /data/user/0/com.whatsapp /data/user/11/com.whatsapp
-#   # APK shared, only /data/user/11 differs.
-#
-# Optional framework patch for PERFECT N-clone notifications:
-# By default Slot1 (managed) has native notifications, Slots 2..N are background
-# secondary users (notifications work while user started, reboot handled by BootReceiver).
-# If you want all N slots to behave exactly like Slot1, allow multiple managed profiles:
-#   frameworks/base/services/core/java/com/android/server/pm/UserManagerService.java
-#   Remove/relax the `hasManagedProfile()` single-profile check to allow names
-#   DualMessenger/EvoClone_*. 5 lines. Not required for MVP.
+#   adb shell du -sh /data/app/*whatsapp*  # APK shared
+#   # only /data/user/<id> differs per clone.

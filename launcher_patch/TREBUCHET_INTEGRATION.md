@@ -1,15 +1,15 @@
-# Trebuchet/Launcher3 integration — DualMessenger clones in the MAIN drawer
-Target: `packages/apps/Launcher3` in your `cnb` tree (Trebuchet or any
-Launcher3-based default launcher, incl. Lawnchair source builds).
-NOT for Pixel/NexusLauncher (closed source) — for it use DualMessenger
-pinned shortcuts instead (already implemented, needs the app built).
+# Trebuchet/Launcher3 integration — ClonePilot clones in the MAIN drawer
+Target: `packages/apps/Launcher3` in your ROM tree (Trebuchet or any
+Launcher3-based default launcher).
+NOT for closed-source launchers — for those use ClonePilot
+pinned shortcuts instead (no build of the launcher needed).
 
-Result (Samsung look):
-- Clone apps (DualClone profile, slot 1) listed in the MAIN drawer with a
+Result:
+- Clone apps (CloneSpace profile, slot 1) listed in the MAIN drawer with a
   numbered bottom-corner badge — no Work tab, no briefcase.
 - If your only managed profile is ours, the Work tab is hidden entirely.
 - Slots 2..N (secondary users) are NOT handled here: launchers lack
-  MANAGE_USERS for them; DualMessenger shortcuts cover those.
+  MANAGE_USERS for them; ClonePilot shortcuts cover those.
 
 Files (same folder as this guide):
 - `CloneAppSource.java` -> copy to `src/com/evolution/launcherclone/CloneAppSource.java`
@@ -19,8 +19,8 @@ Files (same folder as this guide):
 ```bash
 cd packages/apps/Launcher3
 mkdir -p src/com/evolution/launcherclone
-cp <DualMessenger>/launcher_patch/CloneAppSource.java src/com/evolution/launcherclone/
-cp <DualMessenger>/launcher_patch/CloneBadge.java      src/com/evolution/launcherclone/
+cp <ClonePilot>/launcher_patch/CloneAppSource.java src/com/evolution/launcherclone/
+cp <ClonePilot>/launcher_patch/CloneBadge.java      src/com/evolution/launcherclone/
 ```
 
 ## Step 2 — merge clones into the all-apps list
@@ -32,7 +32,7 @@ grep -rn "getActivityList" src/com/android/launcher3/ | head
 Typically `LoaderTask` / `AllAppsList` / `AlphabeticalAppsList` region that
 iterates `LauncherActivityInfo`. Right after that loop, insert:
 ```java
-// DualMessenger: clones in main drawer (Samsung-style, no Work tab).
+// ClonePilot: clones in main drawer (no Work tab).
 for (com.evolution.launcherclone.CloneAppSource.CloneTarget t :
         com.evolution.launcherclone.CloneAppSource.load(mContext)) {
     // addItem signature varies by version; adapt:
@@ -55,7 +55,7 @@ grep -rn "setIcon\|getBadgedIcon\|FastBitmapDrawable" \
 ```
 Wrap the icon for marked items:
 ```java
-// DualMessenger: numbered bottom-corner badge instead of work briefcase.
+// ClonePilot: numbered bottom-corner badge instead of work briefcase.
 if (itemInfo.cloneSlot > 0) {
     icon = com.evolution.launcherclone.CloneBadge.apply(
             getContext(), icon, itemInfo.cloneSlot);
@@ -63,7 +63,7 @@ if (itemInfo.cloneSlot > 0) {
 ```
 `itemInfo.cloneSlot` is the field you added in Step 2 (default 0 = normal app).
 To change color/style ROM-side, edit `CloneBadge.DEFAULT_COLOR` /
-`STYLE_NUMBER_ONLY` (per-user badge prefs live in DualMessenger and apply
+`STYLE_NUMBER_ONLY` (per-user badge prefs live in ClonePilot and apply
 to its pinned shortcuts).
 
 ## Step 4 — hide the Work tab when only ours exists
@@ -85,7 +85,7 @@ tab only disappears for our clone setup.
 ```bash
 m Launcher3
 # set Trebuchet as default on device, then:
-adb shell pm list users                 # expect DualClone (u12)
+adb shell pm list users                 # expect CloneSpace profile
 adb shell pm list packages --user 12    # expect org.telegram.messenger
 # open drawer: Telegram appears in MAIN list with numbered badge, no Work tab
 ```
@@ -95,6 +95,6 @@ helper APIs (`CloneAppSource.load`) are version-independent.
 
 ## Scope reminder
 - Slot 1 (CLONE profile)  -> this patch (main drawer icon + badge).
-- Slots 2..N (secondary)  -> DualMessenger pinned shortcuts (system uid).
-- Managed fallback (u10)  -> Work tab hidden by Step 4; also launchable
-  from shortcuts. Prefer CLONE (already the default in CloneManager).
+- Slots 2..N (secondary)  -> ClonePilot pinned shortcuts (system uid).
+- Managed fallback -> Work tab hidden by Step 4; also launchable
+  from shortcuts.
