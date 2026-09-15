@@ -292,4 +292,23 @@
     <string name="wiz_done">恢复完成</string>
     <string name="wiz_target">目标：%1$s（用户 %2$d）</string>
     <string name="wiz_downgrade">警告：已安装 v%1$s 比备份 v%2$s 更新 — 数据可能无法加载。</string>
+    <string name="set_autobackup">安装/更新应用时自动备份</string>
+    <string name="set_autobackup_sum">在安装或更新时自动归档已跟踪的应用</string>
+    <string name="set_export">导出设置</string>
+    <string name="set_export_sub">将所有选项保存为JSON文件</string>
+    <string name="set_import">导入设置</string>
+    <string name="set_import_sub">从JSON文件恢复选项</string>
+    <string name="w_sched_on">计划备份：已开启</string>
+    <string name="w_sched_off">计划备份：已关闭</string>
+    <string name="w_last_never">尚无备份</string>
+    <string name="w_last_now">刚刚已备份</string>
+    <string name="w_run_now">立即备份</string>
+    <string name="w_run_started">备份已加入队列</string>
+    <string name="w_refresh">刷新</string>
+    <string name="w_desc">CLONIX 备份状态和快捷操作</string>
+    <string name="w_last_min">%d分钟前</string>
+    <string name="w_last_hour">%d小时前</string>
+    <string name="w_last_day">%d天前</string>
+    <string name="set_import_done">已导入 %d 项设置</string>
+    <string name="set_import_pick">选择设置文件</string>
 </resources>

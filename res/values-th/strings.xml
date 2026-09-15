@@ -307,4 +307,23 @@
     <string name="wiz_done">กู้คืนเสร็จ</string>
     <string name="wiz_target">เป้า: %1$s (ผู้ใช้ %2$d)</string>
     <string name="wiz_downgrade">เตือน: ที่ติดตั้ง v%1$s ใหม่กว่าสำเนา v%2$s — ข้อมูลอาจไม่โหลด</string>
+    <string name="set_autobackup">สำรองอัตโนมัติเมื่อติดตั้ง/อัปเดตแอป</string>
+    <string name="set_autobackup_sum">เก็บถาวรแอปที่ติดตามอัตโนมัติเมื่อติดตั้งหรืออัปเดต</string>
+    <string name="set_export">ส่งออกการตั้งค่า</string>
+    <string name="set_export_sub">บันทึกทุกตัวเลือกเป็นไฟล์ JSON</string>
+    <string name="set_import">นำเข้าการตั้งค่า</string>
+    <string name="set_import_sub">กู้คืนตัวเลือกจากไฟล์ JSON</string>
+    <string name="w_sched_on">สำรองตามกำหนด: เปิด</string>
+    <string name="w_sched_off">สำรองตามกำหนด: ปิด</string>
+    <string name="w_last_never">ยังไม่มีการสำรอง</string>
+    <string name="w_last_now">เพิ่งสำรองเมื่อสักครู่</string>
+    <string name="w_run_now">สำรองเดี๋ยวนี้</string>
+    <string name="w_run_started">เข้าคิวสำรองแล้ว</string>
+    <string name="w_refresh">รีเฟรช</string>
+    <string name="w_desc">สถานะสำรองและการทำงานด่วน CLONIX</string>
+    <string name="w_last_min">%d นาทีก่อน</string>
+    <string name="w_last_hour">%d ชม.ก่อน</string>
+    <string name="w_last_day">%d วันก่อน</string>
+    <string name="set_import_done">นำเข้า %d รายการ</string>
+    <string name="set_import_pick">เลือกไฟล์การตั้งค่า</string>
 </resources>

@@ -139,4 +139,31 @@ public final class Prefs {
         try { p(c).edit().putBoolean("dynamic_color", b).apply(); }
         catch (Throwable ignore) { }
     }
+
+    /** Auto-backup a tracked app right after it is installed/updated. */
+    public static boolean autoBackupOnInstall(Context c) {
+        try { return p(c).getBoolean("auto_backup_install", false); }
+        catch (Throwable t) { return false; }
+    }
+
+    public static void setAutoBackupOnInstall(Context c, boolean b) {
+        try { p(c).edit().putBoolean("auto_backup_install", b).apply(); }
+        catch (Throwable ignore) { }
+    }
+
+    /** Package waiting for its auto-backup run (receiver -> job handoff). */
+    public static String pendingAutoPkg(Context c) {
+        try { return p(c).getString("pending_auto_pkg", null); }
+        catch (Throwable t) { return null; }
+    }
+
+    public static void setPendingAutoPkg(Context c, String pkg) {
+        try { p(c).edit().putString("pending_auto_pkg", pkg).apply(); }
+        catch (Throwable ignore) { }
+    }
+
+    public static void clearPendingAutoPkg(Context c) {
+        try { p(c).edit().remove("pending_auto_pkg").apply(); }
+        catch (Throwable ignore) { }
+    }
 }

@@ -307,4 +307,23 @@
     <string name="wiz_done">बहाली पूर्ण</string>
     <string name="wiz_target">लक्ष्य: %1$s (उपयोगकर्ता %2$d)</string>
     <string name="wiz_downgrade">चेतावनी: स्थापित v%1$s बैकअप v%2$s से नया — डेटा न खुले।</string>
+    <string name="set_autobackup">ऐप इंस्टॉल/अपडेट पर ऑटो-बैकअप</string>
+    <string name="set_autobackup_sum">ट्रैक किए गए ऐप्स को इंस्टॉल या अपडेट पर स्वतः संग्रहित करें</string>
+    <string name="set_export">सेटिंग निर्यात करें</string>
+    <string name="set_export_sub">सभी विकल्प JSON फ़ाइल में सहेजें</string>
+    <string name="set_import">सेटिंग आयात करें</string>
+    <string name="set_import_sub">JSON फ़ाइल से विकल्प पुनर्स्थापित करें</string>
+    <string name="w_sched_on">शेड्यूल बैकअप: चालू</string>
+    <string name="w_sched_off">शेड्यूल बैकअप: बंद</string>
+    <string name="w_last_never">कोई बैकअप नहीं</string>
+    <string name="w_last_now">अभी-अभी बैकअप हुआ</string>
+    <string name="w_run_now">अभी बैकअप करें</string>
+    <string name="w_run_started">बैकअप कतार में</string>
+    <string name="w_refresh">रिफ्रेश</string>
+    <string name="w_desc">CLONIX बैकअप स्थिति और त्वरित क्रियाएँ</string>
+    <string name="w_last_min">%d मिनट पहले</string>
+    <string name="w_last_hour">%d घंटे पहले</string>
+    <string name="w_last_day">%d दिन पहले</string>
+    <string name="set_import_done">%d सेटिंग आयात हुईं</string>
+    <string name="set_import_pick">सेटिंग फ़ाइल चुनें</string>
 </resources>

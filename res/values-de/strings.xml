@@ -307,4 +307,23 @@
     <string name="wiz_done">Wiederherstellung fertig</string>
     <string name="wiz_target">Ziel: %1$s (User %2$d)</string>
     <string name="wiz_downgrade">Warnung: installiert v%1$s ist NEUER als Sicherung v%2$s — Daten laden evtl. nicht.</string>
+    <string name="set_autobackup">Auto-Backup bei App-Installation/Update</string>
+    <string name="set_autobackup_sum">Verfolgte Apps automatisch archivieren, wenn sie installiert oder aktualisiert werden</string>
+    <string name="set_export">Einstellungen exportieren</string>
+    <string name="set_export_sub">Alle Optionen als JSON-Datei sichern</string>
+    <string name="set_import">Einstellungen importieren</string>
+    <string name="set_import_sub">Optionen aus einer JSON-Datei wiederherstellen</string>
+    <string name="w_sched_on">Geplante Backups: AN</string>
+    <string name="w_sched_off">Geplante Backups: AUS</string>
+    <string name="w_last_never">Noch kein Backup</string>
+    <string name="w_last_now">Gerade gesichert</string>
+    <string name="w_run_now">Jetzt sichern</string>
+    <string name="w_run_started">Backup in Warteschlange</string>
+    <string name="w_refresh">Aktualisieren</string>
+    <string name="w_desc">CLONIX Backup-Status und Schnellaktionen</string>
+    <string name="w_last_min">Vor %d Min</string>
+    <string name="w_last_hour">Vor %d Std.</string>
+    <string name="w_last_day">Vor %d T.</string>
+    <string name="set_import_done">%d Einstellungen importiert</string>
+    <string name="set_import_pick">Sicherungsdatei wählen</string>
 </resources>

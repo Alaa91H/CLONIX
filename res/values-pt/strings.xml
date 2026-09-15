@@ -307,4 +307,23 @@
     <string name="wiz_done">Restauração pronta</string>
     <string name="wiz_target">Destino: %1$s (usuário %2$d)</string>
     <string name="wiz_downgrade">Alerta: instalada v%1$s é MAIS NOVA que cópia v%2$s — dados podem falhar.</string>
+    <string name="set_autobackup">Backup automático ao instalar/atualizar</string>
+    <string name="set_autobackup_sum">Arquiva automaticamente apps rastreadas ao instalar ou atualizar</string>
+    <string name="set_export">Exportar configurações</string>
+    <string name="set_export_sub">Salva todas as opções como arquivo JSON</string>
+    <string name="set_import">Importar configurações</string>
+    <string name="set_import_sub">Restaura opções de um arquivo JSON</string>
+    <string name="w_sched_on">Backups agendados: ATIVO</string>
+    <string name="w_sched_off">Backups agendados: INATIVO</string>
+    <string name="w_last_never">Sem backup ainda</string>
+    <string name="w_last_now">Backup feito agora</string>
+    <string name="w_run_now">Fazer backup agora</string>
+    <string name="w_run_started">Backup na fila</string>
+    <string name="w_refresh">Atualizar</string>
+    <string name="w_desc">Status de backup e ações rápidas do CLONIX</string>
+    <string name="w_last_min">há %d min</string>
+    <string name="w_last_hour">há %d h</string>
+    <string name="w_last_day">há %d d</string>
+    <string name="set_import_done">%d configurações importadas</string>
+    <string name="set_import_pick">Escolher arquivo de configurações</string>
 </resources>

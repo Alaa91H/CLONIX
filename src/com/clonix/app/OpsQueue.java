@@ -73,6 +73,7 @@ public final class OpsQueue {
                     if (wl != null) wl.release();
                 } catch (Throwable ignore) { }
                 Notify.doneProgress(app, Notify.ID_PROG);
+                try { WidgetUpdater.updateAll(app); } catch (Throwable ignore) { }
             }
         });
     }

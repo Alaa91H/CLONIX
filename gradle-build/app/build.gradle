@@ -11,8 +11,8 @@ android {
         applicationId 'com.clonix.app'
         minSdk 29
         targetSdk 34
-        versionCode 3
-        versionName '2.1'
+        versionCode 4
+        versionName '2.2'
     }
 
     // Stable signing identity: every build type signs with the SAME key so

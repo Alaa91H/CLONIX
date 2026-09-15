@@ -307,4 +307,23 @@
     <string name="wiz_done">Khôi phục xong</string>
     <string name="wiz_target">Đích: %1$s (người dùng %2$d)</string>
     <string name="wiz_downgrade">Cảnh báo: đã cài v%1$s MỚI HƠN bản lưu v%2$s — dữ liệu có thể lỗi.</string>
+    <string name="set_autobackup">Tự sao lưu khi cài/cập nhật ứng dụng</string>
+    <string name="set_autobackup_sum">Tự động lưu trữ ứng dụng đang theo dõi khi cài đặt hoặc cập nhật</string>
+    <string name="set_export">Xuất cài đặt</string>
+    <string name="set_export_sub">Lưu mọi tùy chọn thành tệp JSON</string>
+    <string name="set_import">Nhập cài đặt</string>
+    <string name="set_import_sub">Khôi phục tùy chọn từ tệp JSON</string>
+    <string name="w_sched_on">Sao lưu định kỳ: BẬT</string>
+    <string name="w_sched_off">Sao lưu định kỳ: TẮT</string>
+    <string name="w_last_never">Chưa có bản sao lưu</string>
+    <string name="w_last_now">Vừa sao lưu xong</string>
+    <string name="w_run_now">Sao lưu ngay</string>
+    <string name="w_run_started">Đã xếp hàng sao lưu</string>
+    <string name="w_refresh">Làm mới</string>
+    <string name="w_desc">Trạng thái sao lưu và thao tác nhanh CLONIX</string>
+    <string name="w_last_min">%d phút trước</string>
+    <string name="w_last_hour">%d giờ trước</string>
+    <string name="w_last_day">%d ngày trước</string>
+    <string name="set_import_done">Đã nhập %d cài đặt</string>
+    <string name="set_import_pick">Chọn tệp cài đặt</string>
 </resources>

@@ -756,6 +756,141 @@
                 android:text="@string/set_sec_tools"
                 style="@style/TextAppearance.Clonix.SectionHeader" />
 
+            <!-- Auto-backup on install/update -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="4dp">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_tinted">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_set_bolt"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/sw_autobackup"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/set_autobackup" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="56dp"
+                android:text="@string/set_autobackup_sum"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Settings export / import -->
+            <LinearLayout
+                android:id="@+id/btn_export"
+                style="@style/SheetRow"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="4dp">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_tinted">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_set_export"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_export"
+                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_export_sub"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_import"
+                style="@style/SheetRow"
+                android:paddingHorizontal="4dp">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_tinted">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_set_edit"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_import"
+                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_import_sub"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/btn_logger"
                 style="@style/SheetRow"

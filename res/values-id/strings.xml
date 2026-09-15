@@ -307,4 +307,23 @@
     <string name="wiz_done">Pulih selesai</string>
     <string name="wiz_target">Target: %1$s (pengguna %2$d)</string>
     <string name="wiz_downgrade">Awas: terpasang v%1$s LEBIH BARU dari cadangan v%2$s — data bisa gagal.</string>
+    <string name="set_autobackup">Cadangan otomatis saat aplikasi terpasang</string>
+    <string name="set_autobackup_sum">Arsipkan otomatis aplikasi terpantau saat dipasang/diperbarui</string>
+    <string name="set_export">Ekspor pengaturan</string>
+    <string name="set_export_sub">Simpan semua opsi sebagai file JSON</string>
+    <string name="set_import">Impor pengaturan</string>
+    <string name="set_import_sub">Pulihkan opsi dari file JSON</string>
+    <string name="w_sched_on">Cadangan terjadwal: AKTIF</string>
+    <string name="w_sched_off">Cadangan terjadwal: MATI</string>
+    <string name="w_last_never">Belum ada cadangan</string>
+    <string name="w_last_now">Baru saja dicadangkan</string>
+    <string name="w_run_now">Cadangkan sekarang</string>
+    <string name="w_run_started">Cadangan masuk antrean</string>
+    <string name="w_refresh">Segarkan</string>
+    <string name="w_desc">Status cadangan &amp; aksi cepat CLONIX</string>
+    <string name="w_last_min">%d mnt lalu</string>
+    <string name="w_last_hour">%d jam lalu</string>
+    <string name="w_last_day">%d hari lalu</string>
+    <string name="set_import_done">%d pengaturan diimpor</string>
+    <string name="set_import_pick">Pilih file pengaturan</string>
 </resources>

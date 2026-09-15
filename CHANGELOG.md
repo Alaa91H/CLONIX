@@ -4,6 +4,43 @@ All notable changes to **CLONIX** are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] — 2026-09-15
+
+### Added
+- **Auto-backup on install/update** (opt-in, Settings → Diagnostics & tools) —
+  when a tracked app is installed or updated, CLONIX now archives it
+  automatically. Engineered for Android 14+: the package broadcast only
+  schedules an expedited `JobScheduler` job; the backup itself runs on the
+  shared engine lane with the usual force-stop → snapshot → report flow,
+  honoring the per-app blacklist.
+- **Home-screen widget** — scheduled-backup state, last-backup age
+  (never/min/hour/day), a one-tap *Back up now* action routed through the
+  operation queue, and a refresh button. Updates are event-driven (after
+  every operation) plus a battery-cheap 3-hour safety period — no alarms,
+  no polling.
+- **Settings export/import** — one JSON file captures every preference
+  store (settings, backup options incl. blacklist, schedules, badge
+  style) so a new device or fresh install restores the whole
+  configuration in one tap. Export via the sharesheet; import via the
+  system document picker with count confirmation. Session passwords and
+  backup data are deliberately excluded.
+- **15 new locales** for the new surfaces: de, es, fr, it, ja, ko, ru,
+  tr, vi, zh‑CN, id, ms, th, hi, pt (on top of en/ar) — widget texts,
+  auto-backup and export/import strings fully translated.
+
+### Improved
+- Widget and operation-queue integration: every queued op now refreshes
+  the widget on completion, so the last-backup age stays honest without
+  any scheduled work.
+- Settings import re-syncs schedulers (backup jobs, auto-freeze) so
+  imported preferences take effect immediately.
+
+### Compatibility
+- Same stable signing key — installs directly over v2.1/v2.0.
+- The auto-backup receiver is `exported=false` and ignores its own
+  package; both package broadcasts are system-protected, so no new
+  permission was required.
+
 ## [2.1.0] — 2026-09-15
 
 ### Added

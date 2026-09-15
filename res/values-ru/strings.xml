@@ -307,4 +307,23 @@
     <string name="wiz_done">Восстановление готово</string>
     <string name="wiz_target">Цель: %1$s (user %2$d)</string>
     <string name="wiz_downgrade">Внимание: стоит v%1$s НОВЕЕ бэкапа v%2$s — данные могут не встать.</string>
+    <string name="set_autobackup">Автобэкап при установке/обновлении</string>
+    <string name="set_autobackup_sum">Автоматически архивировать отслеживаемые приложения при установке или обновлении</string>
+    <string name="set_export">Экспорт настроек</string>
+    <string name="set_export_sub">Сохранить все параметры в файл JSON</string>
+    <string name="set_import">Импорт настроек</string>
+    <string name="set_import_sub">Восстановить параметры из файла JSON</string>
+    <string name="w_sched_on">Планировщик: ВКЛ</string>
+    <string name="w_sched_off">Планировщик: ВЫКЛ</string>
+    <string name="w_last_never">Бэкапов ещё нет</string>
+    <string name="w_last_now">Скопировано только что</string>
+    <string name="w_run_now">Скопировать сейчас</string>
+    <string name="w_run_started">Бэкап в очереди</string>
+    <string name="w_refresh">Обновить</string>
+    <string name="w_desc">Статус бэкапов CLONIX и быстрые действия</string>
+    <string name="w_last_min">%d мин назад</string>
+    <string name="w_last_hour">%d ч назад</string>
+    <string name="w_last_day">%d дн. назад</string>
+    <string name="set_import_done">Импортировано настроек: %d</string>
+    <string name="set_import_pick">Выберите файл настроек</string>
 </resources>

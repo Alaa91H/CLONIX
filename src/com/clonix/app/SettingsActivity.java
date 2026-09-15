@@ -56,6 +56,17 @@ public class SettingsActivity extends Activity {
         swSounds.setOnCheckedChangeListener((v, checked) ->
             Prefs.setSounds(this, checked));
 
+        // Auto-backup tracked apps right after install/update.
+        MaterialSwitch swAuto = findViewById(R.id.sw_autobackup);
+        swAuto.setChecked(Prefs.autoBackupOnInstall(this));
+        swAuto.setOnCheckedChangeListener((v, checked) ->
+            Prefs.setAutoBackupOnInstall(this, checked));
+
+        // Portable configuration: one JSON with every preference store.
+        findViewById(R.id.btn_export).setOnClickListener(v ->
+            SettingsBackup.share(this));
+        findViewById(R.id.btn_import).setOnClickListener(v -> pickSettingsFile());
+
         // Material You toggle: applies to the NEXT launch (theme is
         // installed at Application onCreate). Offer an immediate restart
         // so the change is visible without a manual app restart.
@@ -311,6 +322,46 @@ public class SettingsActivity extends Activity {
             })
             .setNegativeButton(R.string.cancel, null)
             .show();
+    }
+
+    private static final int REQ_SETTINGS_FILE = 4712;
+
+    private void pickSettingsFile() {
+        try {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("application/json");
+            startActivityForResult(i, REQ_SETTINGS_FILE);
+        } catch (Throwable t) {
+            Toast.makeText(this, String.valueOf(t.getMessage()),
+                Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override protected void onActivityResult(int req, int res, Intent data) {
+        super.onActivityResult(req, res, data);
+        if (req != REQ_SETTINGS_FILE || res != RESULT_OK
+                || data == null || data.getData() == null) return;
+        try (java.io.InputStream in = getContentResolver()
+                .openInputStream(data.getData())) {
+            java.io.File tmp = new java.io.File(getCacheDir(),
+                "import_settings.json");
+            java.io.FileOutputStream fo = new java.io.FileOutputStream(tmp);
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = in.read(buf)) > 0) fo.write(buf, 0, n);
+            fo.close();
+            int applied = SettingsBackup.importInto(this, tmp);
+            // Re-sync anything the imported prefs control.
+            try { BackupScheduler.sync(this); } catch (Throwable ignore) { }
+            try { AutoFreezeService.sync(this); } catch (Throwable ignore) { }
+            Toast.makeText(this, getString(R.string.set_import_done, applied),
+                Toast.LENGTH_LONG).show();
+            refreshSummaries();
+        } catch (Throwable t) {
+            Toast.makeText(this, String.valueOf(t.getMessage()),
+                Toast.LENGTH_LONG).show();
+        }
     }
 
     /** Ask the system to exempt the app from battery optimization so

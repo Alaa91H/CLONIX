@@ -307,4 +307,23 @@
     <string name="wiz_done">Pulih selesai</string>
     <string name="wiz_target">Sasaran: %1$s (pengguna %2$d)</string>
     <string name="wiz_downgrade">Awas: terpasang v%1$s LEBIH BAHARU dari sandaran v%2$s — data bisa gagal.</string>
+    <string name="set_autobackup">Sandaran auto bila aplikasi dipasang</string>
+    <string name="set_autobackup_sum">Arkib automatik aplikasi yang dipantau bila dipasang/dikemas kini</string>
+    <string name="set_export">Eksport tetapan</string>
+    <string name="set_export_sub">Simpan semua pilihan sebagai fail JSON</string>
+    <string name="set_import">Import tetapan</string>
+    <string name="set_import_sub">Pulihkan pilihan dari fail JSON</string>
+    <string name="w_sched_on">Sandaran berjadual: HIDUP</string>
+    <string name="w_sched_off">Sandaran berjadual: MATI</string>
+    <string name="w_last_never">Tiada sandaran lagi</string>
+    <string name="w_last_now">Baru disandarkan</string>
+    <string name="w_run_now">Sandar sekarang</string>
+    <string name="w_run_started">Sandaran dalam baris gilir</string>
+    <string name="w_refresh">Muat semula</string>
+    <string name="w_desc">Status sandaran &amp; tindakan pantas CLONIX</string>
+    <string name="w_last_min">%d min lalu</string>
+    <string name="w_last_hour">%d jam lalu</string>
+    <string name="w_last_day">%d hari lalu</string>
+    <string name="set_import_done">%d tetapan diimport</string>
+    <string name="set_import_pick">Pilih fail tetapan</string>
 </resources>

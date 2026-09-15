@@ -307,4 +307,23 @@
     <string name="wiz_done">복원 완료</string>
     <string name="wiz_target">대상: %1$s (사용자 %2$d)</string>
     <string name="wiz_downgrade">경고: 설치된 v%1$s이 백업 v%2$s보다 새 버전 — 데이터 작동 안 할 수 있음.</string>
+    <string name="set_autobackup">앱 설치/업데이트 시 자동 백업</string>
+    <string name="set_autobackup_sum">추적 중인 앱을 설치·업데이트 시 자동 보관합니다</string>
+    <string name="set_export">설정 내보내기</string>
+    <string name="set_export_sub">모든 옵션을 JSON 파일로 저장</string>
+    <string name="set_import">설정 가져오기</string>
+    <string name="set_import_sub">JSON 파일에서 옵션 복원</string>
+    <string name="w_sched_on">예약 백업: 켬</string>
+    <string name="w_sched_off">예약 백업: 끔</string>
+    <string name="w_last_never">백업 없음</string>
+    <string name="w_last_now">방금 백업됨</string>
+    <string name="w_run_now">지금 백업</string>
+    <string name="w_run_started">백업 대기열에 추가됨</string>
+    <string name="w_refresh">새로고침</string>
+    <string name="w_desc">CLONIX 백업 상태 및 빠른 작업</string>
+    <string name="w_last_min">%d분 전</string>
+    <string name="w_last_hour">%d시간 전</string>
+    <string name="w_last_day">%d일 전</string>
+    <string name="set_import_done">설정 %d개 가져옴</string>
+    <string name="set_import_pick">설정 파일 선택</string>
 </resources>

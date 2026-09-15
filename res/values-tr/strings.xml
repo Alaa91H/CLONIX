@@ -307,4 +307,23 @@
     <string name="wiz_done">Yükleme bitti</string>
     <string name="wiz_target">Hedef: %1$s (kullanıcı %2$d)</string>
     <string name="wiz_downgrade">Uyarı: kurulu v%1$s yedekten v%2$s DAHA YENİ — veri açılmayabilir.</string>
+    <string name="set_autobackup">Uygulama kurulunca otomatik yedek</string>
+    <string name="set_autobackup_sum">İzlenen uygulamaları kurulum/güncellemede otomatik arşivle</string>
+    <string name="set_export">Ayarları dışa aktar</string>
+    <string name="set_export_sub">Tüm seçenekleri JSON dosyası olarak kaydet</string>
+    <string name="set_import">Ayarları içe aktar</string>
+    <string name="set_import_sub">Seçenekleri JSON dosyasından geri yükle</string>
+    <string name="w_sched_on">Zamanlanmış yedek: AÇIK</string>
+    <string name="w_sched_off">Zamanlanmış yedek: KAPALI</string>
+    <string name="w_last_never">Henüz yedek yok</string>
+    <string name="w_last_now">Az önce yedeklendi</string>
+    <string name="w_run_now">Şimdi yedekle</string>
+    <string name="w_run_started">Yedek kuyruğa alındı</string>
+    <string name="w_refresh">Yenile</string>
+    <string name="w_desc">CLONIX yedek durumu ve hızlı işlemler</string>
+    <string name="w_last_min">%d dk önce</string>
+    <string name="w_last_hour">%d sa önce</string>
+    <string name="w_last_day">%d gün önce</string>
+    <string name="set_import_done">%d ayar içe aktarıldı</string>
+    <string name="set_import_pick">Ayar dosyasını seç</string>
 </resources>

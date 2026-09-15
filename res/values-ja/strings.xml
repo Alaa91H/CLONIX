@@ -307,4 +307,23 @@
     <string name="wiz_done">復元が終わりました</string>
     <string name="wiz_target">対象: %1$s (利用者%2$d)</string>
     <string name="wiz_downgrade">警告: 導入済v%1$sが保存v%2$sより新 — データが動かない可能性あり。</string>
+    <string name="set_autobackup">アプリ追加・更新時に自動バックアップ</string>
+    <string name="set_autobackup_sum">追跡中のアプリを追加・更新時に自動アーカイブします</string>
+    <string name="set_export">設定をエクスポート</string>
+    <string name="set_export_sub">すべてのオプションをJSONで保存</string>
+    <string name="set_import">設定をインポート</string>
+    <string name="set_import_sub">JSONファイルからオプションを復元</string>
+    <string name="w_sched_on">予約バックアップ: オン</string>
+    <string name="w_sched_off">予約バックアップ: オフ</string>
+    <string name="w_last_never">バックアップなし</string>
+    <string name="w_last_now">たった今バックアップ</string>
+    <string name="w_run_now">今すぐバックアップ</string>
+    <string name="w_run_started">バックアップを予約しました</string>
+    <string name="w_refresh">更新</string>
+    <string name="w_desc">CLONIXのバックアップ状態とクイック操作</string>
+    <string name="w_last_min">%d分前</string>
+    <string name="w_last_hour">%d時間前</string>
+    <string name="w_last_day">%d日前</string>
+    <string name="set_import_done">%d件の設定をインポート</string>
+    <string name="set_import_pick">設定ファイルを選択</string>
 </resources>

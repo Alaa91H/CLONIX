@@ -307,4 +307,23 @@
     <string name="wiz_done">Restauration terminée</string>
     <string name="wiz_target">Cible : %1$s (utilisateur %2$d)</string>
     <string name="wiz_downgrade">Alerte : installée v%1$s PLUS RÉCENTE que copie v%2$s — données peut-être illisibles.</string>
+    <string name="set_autobackup">Sauvegarde auto a l’installation/mise a jour</string>
+    <string name="set_autobackup_sum">Archive automatiquement les applications suivies lors de leur installation ou mise a jour</string>
+    <string name="set_export">Exporter les réglages</string>
+    <string name="set_export_sub">Enregistrer toutes les options dans un fichier JSON</string>
+    <string name="set_import">Importer les réglages</string>
+    <string name="set_import_sub">Restaurer les options depuis un fichier JSON</string>
+    <string name="w_sched_on">Sauvegardes planifiées : OUI</string>
+    <string name="w_sched_off">Sauvegardes planifiées : NON</string>
+    <string name="w_last_never">Aucune sauvegarde</string>
+    <string name="w_last_now">Sauvegardé a l’instant</string>
+    <string name="w_run_now">Sauvegarder maintenant</string>
+    <string name="w_run_started">Sauvegarde en file</string>
+    <string name="w_refresh">Actualiser</string>
+    <string name="w_desc">État des sauvegardes et actions rapides CLONIX</string>
+    <string name="w_last_min">il y a %d min</string>
+    <string name="w_last_hour">il y a %d h</string>
+    <string name="w_last_day">il y a %d j</string>
+    <string name="set_import_done">%d réglages importés</string>
+    <string name="set_import_pick">Choisir un fichier de réglages</string>
 </resources>
