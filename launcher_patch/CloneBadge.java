@@ -9,8 +9,8 @@ import android.graphics.drawable.Drawable;
 
 /**
  * Numbered bottom-corner badge for clone icons inside the launcher drawer.
- * Mirrors ClonePilot's BadgeSettings defaults (number badge);
- * per-user customization of the badge lives in the ClonePilot app and
+ * Mirrors Clonix's BadgeSettings defaults (number badge);
+ * per-user customization of the badge lives in the Clonix app and
  * applies to pinned shortcuts. This renderer is the static ROM-side twin
  * for drawer icons (launchers cannot read another app's prefs cheaply).
  *

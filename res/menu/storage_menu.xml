@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Storage screen actions: backup-destination picker (moved from Dashboard). -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/m_dest"
+        android:title="@string/backup_dest"
+        android:showAsAction="never" />
+</menu>

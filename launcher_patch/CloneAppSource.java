@@ -14,18 +14,18 @@ import java.util.List;
 
 /**
  * Drop-in helper for Launcher3-based launchers (Trebuchet, Lawnchair source).
- * Surfaces ClonePilot clones in the MAIN app drawer with slot numbers,
+ * Surfaces Clonix clones in the MAIN app drawer with slot numbers,
  * no Work tab, no briefcase badge.
  *
  * Uses only stable public APIs (UserManager, LauncherApps) so it survives
  * Launcher3 version changes. The calling launcher already holds cross-profile
  * access as the active launcher; no extra permissions needed for profiles.
  * Secondary users (slots 2+) need MANAGE_USERS: if unavailable here they are
- * skipped gracefully (ClonePilot pinned shortcuts cover them instead).
+ * skipped gracefully (Clonix pinned shortcuts cover them instead).
  *
  * Split of duties by design:
  *  - Slot 1 (DualClone CLONE profile, a PROFILE of owner) -> this patch.
- *  - Slots 2..N (Clone_* secondary users) -> ClonePilot shortcuts.
+ *  - Slots 2..N (Clone_* secondary users) -> Clonix shortcuts.
  */
 public final class CloneAppSource {
     private static final String TAG = "DualClonePatch";

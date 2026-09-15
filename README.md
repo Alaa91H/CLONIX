@@ -1,4 +1,4 @@
-# ClonePilot — independent app cloner
+# CLONIX — independent app cloner
 
 Run multiple isolated copies of any app: same APK shared, separate data,
 numbered badges on the original icons, per-clone storage view.
@@ -22,7 +22,7 @@ numbered badges on the original icons, per-clone storage view.
 
 ## ROM integration
 ```
-PRODUCT_PACKAGES += ClonePilot
+PRODUCT_PACKAGES += Clonix
 ```
 See INTEGRATION.mk. Standalone: build APK (Gradle locally or GitHub
 Actions) and install normally + grant root, or flash ksu-module.

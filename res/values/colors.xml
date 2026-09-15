@@ -1,4 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="seed">#6750A4</color>
+    <!-- red identity (M3 tonal red palette, light). -->
+    <color name="seed">#C62828</color>
+
+    <!-- Primary colors -->
+    <color name="primary">#B3261E</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#FFDAD6</color>
+    <color name="onPrimaryContainer">#410002</color>
+    <color name="primaryContainerDim">#F5C0B8</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#775652</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="secondaryContainer">#FFDAD7</color>
+    <color name="onSecondaryContainer">#2B1512</color>
+
+    <!-- Tertiary colors -->
+    <color name="tertiary">#7D5230</color>
+    <color name="onTertiary">#FFFFFF</color>
+    <color name="tertiaryContainer">#FFDBCB</color>
+    <color name="onTertiaryContainer">#331100</color>
+
+    <!-- Surface colors -->
+    <color name="surface">#FFFBFE</color>
+    <color name="onSurface">#1C1B1F</color>
+    <color name="surfaceVariant">#E7E0EC</color>
+    <color name="onSurfaceVariant">#49454F</color>
+
+    <!-- Background colors -->
+    <color name="background">#FFFBFE</color>
+    <color name="onBackground">#1C1B1F</color>
+
+    <!-- Surface containers -->
+    <color name="surfaceContainer">#F7F2FA</color>
+    <color name="surfaceContainerHigh">#F0E8F5</color>
+    <color name="surfaceContainerHighest">#E8E0EA</color>
+    <color name="surfaceContainerLow">#FAF5FA</color>
+    <color name="surfaceContainerLowest">#FFFFFF</color>
+
+    <!-- Inverse colors -->
+    <color name="inverseSurface">#313033</color>
+    <color name="inverseOnSurface">#F4EFF4</color>
+    <color name="inversePrimary">#FFB4AB</color>
+
+    <!-- Outline colors -->
+    <color name="outline">#79747E</color>
+    <color name="outlineVariant">#CAC4D0</color>
+
+    <!-- Error colors -->
+    <color name="error">#B3261E</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="errorContainer">#F9DEDC</color>
+    <color name="onErrorContainer">#410E0B</color>
+
+    <!-- Scrim colors -->
+    <color name="scrim">#000000</color>
 </resources>

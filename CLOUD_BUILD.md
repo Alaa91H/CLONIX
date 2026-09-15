@@ -2,18 +2,18 @@
 
 ## Option A — normal install + root (simplest, recommended)
 1. Build: local Gradle (`gradle-build/`) or push this folder to GitHub
-   and download the `ClonePilot-apk` Actions artifact.
-2. `adb install ClonePilot.apk`
-3. Grant root to ClonePilot in the root manager (Superuser tab).
-4. Open ClonePilot, clone any app, pin home shortcuts with numbered badges.
+   and download the `Clonix-apk` Actions artifact.
+2. `adb install Clonix.apk`
+3. Grant root to CLONIX in the root manager (Superuser tab).
+4. Open CLONIX, clone any app, pin home shortcuts with numbered badges.
 
 ## Option B — KSU/Magisk priv-app module (persistent system powers)
-1. Copy `ClonePilot.apk` into:
-   `ksu-module/system/priv-app/ClonePilot/ClonePilot.apk`
+1. Copy `Clonix.apk` into:
+   `ksu-module/system/priv-app/CLONIX/Clonix.apk`
 2. Zip the CONTENTS of `ksu-module/` -> flash in root manager -> reboot.
 3. Verify:
 ```bash
-adb shell dumpsys package com.clonepilot.app | findstr "MANAGE_USERS INSTALL_PACKAGES"
+adb shell dumpsys package com.clonix.app | findstr "MANAGE_USERS INSTALL_PACKAGES"
 # expect: granted=true lines
 ```
 

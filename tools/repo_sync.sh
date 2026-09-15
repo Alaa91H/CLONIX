@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ROM source sync + ClonePilot module build
+# ROM source sync + Clonix module build
 # RUN INSIDE WSL2 Ubuntu (NOT Windows, NOT /mnt/d). AOSP cannot build on NTFS.
 # Usage:  bash repo_sync.sh [WORKDIR]     (default: $HOME/evox17)
 set -e
@@ -44,7 +44,7 @@ for i in 1 2 3 4 5; do
   sleep 60
 done
 
-echo "=== 4) bring ClonePilot sources into tree ==="
+echo "=== 4) bring Clonix sources into tree ==="
 WIN_SRC="/mnt/d/EvoX17/packages/apps/DualMessenger"
 if [ -d "$WIN_SRC" ]; then
   rm -rf packages/apps/DualMessenger
@@ -54,7 +54,7 @@ else
   echo "NOTE: $WIN_SRC not found. Copy your project folder to packages/apps/DualMessenger manually."
 fi
 
-echo "=== 5) env + auto lunch + build ClonePilot module only ==="
+echo "=== 5) env + auto lunch + build Clonix module only ==="
 source build/envsetup.sh
 COMBO="$(lunch 2>/dev/null | grep -o "lineage_${DEVICE}-[a-z0-9]*-userdebug" | head -n1 || true)"
 if [ -z "$COMBO" ]; then COMBO="lineage_${DEVICE}-userdebug"; fi
@@ -63,6 +63,6 @@ lunch "$COMBO"
 export USE_CCACHE=1
 export CCACHE_COMPRESS=1
 ccache -M 50G -F 0 || true
-m ClonePilot
+m Clonix
 
-echo "=== DONE: out/.../system/priv-app/ClonePilot/ClonePilot.apk ==="
+echo "=== DONE: out/.../system/priv-app/Clonix/Clonix.apk ==="

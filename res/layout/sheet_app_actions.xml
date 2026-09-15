@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- app detail sheet: app header, action pills row (Disable /
+     Uninstall / Force stop / Clear data), then list actions. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_icon_tinted">
+
+            <ImageView
+                android:id="@+id/app_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/app_pkg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp">
+
+        <TextView
+            android:id="@+id/btn_disable"
+            style="@style/ActionPill" />
+
+        <TextView
+            android:id="@+id/btn_uninstall"
+            style="@style/ActionPill"
+            android:layout_marginStart="8dp" />
+
+        <TextView
+            android:id="@+id/btn_force_stop"
+            style="@style/ActionPill"
+            android:layout_marginStart="8dp" />
+
+        <TextView
+            android:id="@+id/btn_clear_data"
+            style="@style/ActionPill"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_create_copy"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/act_create_copy" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_manage_copies"
+        style="@style/SheetRow"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/act_manage_copies" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_favorites"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/badge_button" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_backup_restore"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/act_backup_restore" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_labels"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/category_title" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_blacklist"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/filter_blacklisted" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/act_battery"
+        style="@style/SheetRow"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/act_battery" />
+    </LinearLayout>
+</LinearLayout>

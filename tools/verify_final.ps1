@@ -1,6 +1,6 @@
-# ClonePilot acceptance test (run BEFORE flash = baseline, AFTER flash+reboot = verify)
+# Clonix acceptance test (run BEFORE flash = baseline, AFTER flash+reboot = verify)
 # Usage: .\verify_final.ps1
-$PKG = 'com.clonepilot.app'
+$PKG = 'com.clonix.app'
 $fail = 0
 function Check([string]$name, [bool]$ok, [string]$detail='') {
   if ($ok) { Write-Host "[PASS] $name $detail" } else { Write-Host "[FAIL] $name $detail"; $script:fail++ }
@@ -24,7 +24,7 @@ $l = try { adb shell am start -n "$PKG/.MainActivity" 2>&1 | Out-String } catch 
 Write-Host $l.Trim()
 Start-Sleep -Seconds 3
 $crash = adb shell dumpsys activity activities 2>&1 | Out-String
-Check 'no crash dialog' ($crash -notmatch 'Application Error.*clonepilot')
+Check 'no crash dialog' ($crash -notmatch 'Application Error.*clonix')
 Write-Host '=== 5) users ==='
 Write-Host (adb shell pm list users 2>&1 | Out-String).Trim()
 Write-Host ''

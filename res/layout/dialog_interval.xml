@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Interval picker: number + unit toggle (hours / days). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/interval_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="4"
+        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/unit_h"
+            style="@style/TogglePill"
+            android:text="@string/unit_hours" />
+
+        <TextView
+            android:id="@+id/unit_d"
+            style="@style/TogglePill"
+            android:layout_marginStart="8dp"
+            android:text="@string/unit_days" />
+    </LinearLayout>
+</LinearLayout>

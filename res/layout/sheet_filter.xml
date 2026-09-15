@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILTER sheet: close X + APPLY OPTIONS, sectioned toggle groups. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <FrameLayout
+                android:id="@+id/close"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sb_close"
+                    android:importantForAccessibility="no" />
+            </FrameLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/apply_options"
+                style="@style/Widget.Material3.Button.TonalButton" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/filter_title"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/ft_app_type"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
+                android:text="@string/reset_filters"
+                android:textSize="12sp"
+                style="@style/Widget.Material3.Button.TextButton" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/t_all"
+                style="@style/TogglePill"
+                android:text="@string/ft_user_system" />
+
+            <TextView
+                android:id="@+id/t_user"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_user" />
+
+            <TextView
+                android:id="@+id/t_system"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_system" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/ft_backup"
+            android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/b_all"
+                style="@style/TogglePill"
+                android:text="@string/ft_all" />
+
+            <TextView
+                android:id="@+id/b_yes"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_backed_up" />
+
+            <TextView
+                android:id="@+id/b_no"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_not_backed_up" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/ft_clones"
+            android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/c_all"
+                style="@style/TogglePill"
+                android:text="@string/ft_all" />
+
+            <TextView
+                android:id="@+id/c_yes"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_cloned" />
+
+            <TextView
+                android:id="@+id/c_no"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_not_cloned" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/ft_install_status"
+            android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/i_all"
+                style="@style/TogglePill"
+                android:text="@string/ft_all" />
+
+            <TextView
+                android:id="@+id/i_yes"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_installed" />
+
+            <TextView
+                android:id="@+id/i_no"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_not_installed" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/ft_enabled_status"
+            android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/e_all"
+                style="@style/TogglePill"
+                android:text="@string/ft_all" />
+
+            <TextView
+                android:id="@+id/e_yes"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_enabled" />
+
+            <TextView
+                android:id="@+id/e_no"
+                style="@style/TogglePill"
+                android:layout_marginStart="8dp"
+                android:text="@string/ft_disabled" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,11 +1,11 @@
-# ClonePilot ROM integration
+# CLONIX ROM integration
 # Add to vendor/.../config/common.mk or device/<codename>/device.mk:
 
-# PRODUCT_PACKAGES += ClonePilot
+# PRODUCT_PACKAGES += Clonix
 
 # Permissions allowlist (privapp):
 # PRODUCT_COPY_FILES += \
-#     packages/apps/DualMessenger/etc/privapp-permissions-com.clonepilot.app.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-com.clonepilot.app.xml
+#     packages/apps/Clonix/etc/privapp-permissions-com.clonix.app.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-com.clonix.app.xml
 
 # Optional overlays to keep clone users hidden from user switcher:
 # - config_multiuserMaximumUsers = 8 (needed for N clones)
@@ -21,7 +21,7 @@
 # Build:
 #   source build/envsetup.sh
 #   lunch lineage_<device>-userdebug
-#   m ClonePilot
+#   m Clonix
 #
 # Standalone instead (no ROM rebuild):
 #   build APK via gradle-build/ (local Gradle or GitHub Actions),

@@ -1,7 +1,7 @@
-# Trebuchet/Launcher3 integration — ClonePilot clones in the MAIN drawer
+# Trebuchet/Launcher3 integration — Clonix clones in the MAIN drawer
 Target: `packages/apps/Launcher3` in your ROM tree (Trebuchet or any
 Launcher3-based default launcher).
-NOT for closed-source launchers — for those use ClonePilot
+NOT for closed-source launchers — for those use Clonix
 pinned shortcuts instead (no build of the launcher needed).
 
 Result:
@@ -9,7 +9,7 @@ Result:
   numbered bottom-corner badge — no Work tab, no briefcase.
 - If your only managed profile is ours, the Work tab is hidden entirely.
 - Slots 2..N (secondary users) are NOT handled here: launchers lack
-  MANAGE_USERS for them; ClonePilot shortcuts cover those.
+  MANAGE_USERS for them; Clonix shortcuts cover those.
 
 Files (same folder as this guide):
 - `CloneAppSource.java` -> copy to `src/com/evolution/launcherclone/CloneAppSource.java`
@@ -19,8 +19,8 @@ Files (same folder as this guide):
 ```bash
 cd packages/apps/Launcher3
 mkdir -p src/com/evolution/launcherclone
-cp <ClonePilot>/launcher_patch/CloneAppSource.java src/com/evolution/launcherclone/
-cp <ClonePilot>/launcher_patch/CloneBadge.java      src/com/evolution/launcherclone/
+cp <Clonix>/launcher_patch/CloneAppSource.java src/com/evolution/launcherclone/
+cp <Clonix>/launcher_patch/CloneBadge.java      src/com/evolution/launcherclone/
 ```
 
 ## Step 2 — merge clones into the all-apps list
@@ -32,7 +32,7 @@ grep -rn "getActivityList" src/com/android/launcher3/ | head
 Typically `LoaderTask` / `AllAppsList` / `AlphabeticalAppsList` region that
 iterates `LauncherActivityInfo`. Right after that loop, insert:
 ```java
-// ClonePilot: clones in main drawer (no Work tab).
+// Clonix: clones in main drawer (no Work tab).
 for (com.evolution.launcherclone.CloneAppSource.CloneTarget t :
         com.evolution.launcherclone.CloneAppSource.load(mContext)) {
     // addItem signature varies by version; adapt:
@@ -55,7 +55,7 @@ grep -rn "setIcon\|getBadgedIcon\|FastBitmapDrawable" \
 ```
 Wrap the icon for marked items:
 ```java
-// ClonePilot: numbered bottom-corner badge instead of work briefcase.
+// Clonix: numbered bottom-corner badge instead of work briefcase.
 if (itemInfo.cloneSlot > 0) {
     icon = com.evolution.launcherclone.CloneBadge.apply(
             getContext(), icon, itemInfo.cloneSlot);
@@ -63,7 +63,7 @@ if (itemInfo.cloneSlot > 0) {
 ```
 `itemInfo.cloneSlot` is the field you added in Step 2 (default 0 = normal app).
 To change color/style ROM-side, edit `CloneBadge.DEFAULT_COLOR` /
-`STYLE_NUMBER_ONLY` (per-user badge prefs live in ClonePilot and apply
+`STYLE_NUMBER_ONLY` (per-user badge prefs live in Clonix and apply
 to its pinned shortcuts).
 
 ## Step 4 — hide the Work tab when only ours exists
@@ -95,6 +95,6 @@ helper APIs (`CloneAppSource.load`) are version-independent.
 
 ## Scope reminder
 - Slot 1 (CLONE profile)  -> this patch (main drawer icon + badge).
-- Slots 2..N (secondary)  -> ClonePilot pinned shortcuts (system uid).
+- Slots 2..N (secondary)  -> Clonix pinned shortcuts (system uid).
 - Managed fallback -> Work tab hidden by Step 4; also launchable
   from shortcuts.

@@ -1,10 +1,10 @@
-// ClonePilot - independent app cloner (clone profile + hidden users).
+// CLONIX - independent app cloner (clone profile + hidden users).
 // System privileged app. Same APK, N copies via hidden users.
 // Slot 1 = Clone profile (concurrent, no work tab).
 // Slot 2..N = Secondary users started in background.
 
 android_app {
-    name: "ClonePilot",
+    name: "Clonix",
     srcs: ["src/**/*.java"],
     resource_dirs: ["res"],
     static_libs: [
@@ -15,7 +15,7 @@ android_app {
     privileged: true,
     system_ext_specific: false,
     certificate: "platform",
-    required: ["privapp-permissions-com.clonepilot.app"],
+    required: ["privapp-permissions-com.clonix.app"],
     optimize: {
         enabled: true,
         shrink: true,
@@ -26,7 +26,7 @@ android_app {
 }
 
 prebuilt_etc {
-    name: "privapp-permissions-com.clonepilot.app",
-    src: "etc/privapp-permissions-com.clonepilot.app.xml",
+    name: "privapp-permissions-com.clonix.app",
+    src: "etc/privapp-permissions-com.clonix.app.xml",
     sub_dir: "permissions",
 }

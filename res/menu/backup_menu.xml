@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selection → automation &amp; protection → destinations &amp; import. -->
+    <item
+        android:id="@+id/m_select_all"
+        android:title="@string/select_all"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_clear_sel"
+        android:title="@string/clear_sel"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_archives"
+        android:title="@string/archives_title"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_schedule"
+        android:title="@string/schedule_title"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_password"
+        android:title="@string/pw_title"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_comp"
+        android:title="@string/comp_title"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_migrate"
+        android:title="@string/migrate_title"
+        android:showAsAction="never" />
+</menu>

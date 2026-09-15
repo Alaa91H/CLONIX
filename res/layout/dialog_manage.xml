@@ -9,6 +9,13 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <View
+        android:layout_width="32dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/sheet_handle" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -117,6 +124,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_info_btn"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_backup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_backup_btn"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_restore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_restore_btn"
         style="@style/Widget.Material3.Button.OutlinedButton" />
 </LinearLayout>
 </ScrollView>

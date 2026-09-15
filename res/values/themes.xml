@@ -1,7 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Material3 baseline seed (dynamic color overrides on supported devices). -->
-    <style name="Theme.ClonePilot" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Material3 Expressive baseline seed (dynamic color overrides on supported devices). -->
+    <style name="Theme.Clonix" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/seed</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiaryContainer</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceVariant</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outlineVariant</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorErrorContainer">@color/errorContainer</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Theme.Clonix.EdgeToEdge" parent="Theme.Clonix">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+    </style>
+
+    <!-- Forced light / dark (same seed, no DayNight switching). -->
+    <style name="Theme.Clonix.Light" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/seed</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiaryContainer</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceVariant</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Theme.Clonix.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#FFB4AB</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!-- Shared section header: primary-tinted TitleSmall. Used by Settings
+         groups and any grouped screen so every list reads the same. -->
+    <style name="TextAppearance.Clonix.SectionHeader"
+        parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!--  stat chip: icon box + label, tone-on-tone pill. -->
+    <style name="StatChip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/bg_stat_chip</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Toggle pill used in sort/filter sheets ( segmented). -->
+    <style name="TogglePill">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_chip_toggle</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Action pill in the app detail sheet (Disable / Uninstall / …). -->
+    <style name="ActionPill">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_chip_toggle</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <!-- Sheet row: icon-free list action, 52dp, with pressed state. -->
+    <style name="SheetRow">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="SheetRowText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+    </style>
+
+    <!-- AMOLED: pure-black surfaces, same seed accents. -->
+    <style name="Theme.Clonix.Amoled" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#FFB4AB</item>
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="colorSurface">@android:color/black</item>
+        <item name="colorSurfaceVariant">#FF111111</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 </resources>

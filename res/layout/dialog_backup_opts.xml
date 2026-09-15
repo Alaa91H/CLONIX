@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_data" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_cache"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_cache" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_priv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_priv" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_priv_sum"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_perms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/opt_perms" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_appops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_appops" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_ssaid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_ssaid" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_ssaid_sum"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_enc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/opt_enc" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_enc_sum"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/opt_incr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/opt_incr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_incr_sum"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+    </LinearLayout>
+</ScrollView>

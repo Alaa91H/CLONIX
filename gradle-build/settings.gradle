@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "ClonePilot"
+rootProject.name = "Clonix"
 include(":app")

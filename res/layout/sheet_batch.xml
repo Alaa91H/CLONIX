@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BATCH ACTIONS sheet: count header + batch operations list. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:padding="16dp">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="12dp"
+        android:background="?attr/colorOutlineVariant" />
+
+    <TextView
+        android:id="@+id/batch_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/ba_backup"
+        style="@style/SheetRow"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_backup" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ba_restore"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_restore" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ba_delete"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_delete_local" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ba_export"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_export_list" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ba_enable_disable"
+        style="@style/SheetRow">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_enable_disable" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ba_uninstall"
+        style="@style/SheetRow"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            style="@style/SheetRowText"
+            android:text="@string/ba_uninstall" />
+    </LinearLayout>
+</LinearLayout>

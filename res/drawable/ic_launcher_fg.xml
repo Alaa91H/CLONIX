@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CLONIX Double-C monogram: large C (Clone) + small inner C (copy), white on gradient. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M61.8,35.2 A18.8,18.8 0 1,0 61.8,72.8"
+        android:strokeColor="#FFFFFF" android:strokeWidth="9" android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path android:pathData="M59.4,46.8 A7.2,7.2 0 1,0 59.4,61.2"
+        android:strokeColor="#FFDAD6" android:strokeWidth="7" android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+</vector>

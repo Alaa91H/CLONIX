@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sort (single-choice group) → trust actions → move in/out. -->
+    <group
+        android:id="@+id/group_sort"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/m_sort_new"
+            android:title="@string/sort_newest"
+            android:checked="true"
+            android:showAsAction="never" />
+        <item
+            android:id="@+id/m_sort_old"
+            android:title="@string/sort_oldest"
+            android:showAsAction="never" />
+        <item
+            android:id="@+id/m_sort_big"
+            android:title="@string/sort_largest"
+            android:showAsAction="never" />
+        <item
+            android:id="@+id/m_sort_name"
+            android:title="@string/sort_name_arch"
+            android:showAsAction="never" />
+    </group>
+    <item
+        android:id="@+id/m_verify_all"
+        android:title="@string/verify_all"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_auto_verify"
+        android:title="@string/auto_verify"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_export_all"
+        android:title="@string/export_all"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_import"
+        android:title="@string/import_usb"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_migrate"
+        android:title="@string/migrate_title"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_scan_invalid"
+        android:title="@string/maint_scan_invalid"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/m_apply_retention"
+        android:title="@string/maint_apply_retention"
+        android:showAsAction="never" />
+</menu>

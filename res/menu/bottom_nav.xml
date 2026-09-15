@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Main distribution: Home | Archives | Schedules | Account -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/nav_home"
+        android:icon="@drawable/ic_nav_home" />
+    <item
+        android:id="@+id/nav_sync"
+        android:title="@string/nav_sync"
+        android:icon="@drawable/ic_nav_archives" />
+    <item
+        android:id="@+id/nav_schedules"
+        android:title="@string/nav_schedules"
+        android:icon="@drawable/ic_nav_sched" />
+    <item
+        android:id="@+id/nav_account"
+        android:title="@string/nav_account"
+        android:icon="@drawable/ic_nav_account" />
+</menu>

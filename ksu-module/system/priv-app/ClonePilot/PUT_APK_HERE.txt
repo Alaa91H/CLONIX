@@ -1,4 +1,0 @@
-PUT THE BUILT APK HERE as: ClonePilot.apk
-1) Build via Gradle locally or GitHub Actions (see CLOUD_BUILD.md).
-2) Copy ClonePilot.apk into THIS directory.
-3) Zip the ksu-module folder contents -> flash -> reboot.

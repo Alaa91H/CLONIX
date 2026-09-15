@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.clonepilot.app">
+    package="com.clonix.app">
     <!-- NOTE: no sharedUserId on purpose: the standalone build is NOT
          platform-signed, and android.uid.system requires the platform cert.
          All powers come from privapp-permissions allowlist / root instead. -->
@@ -17,35 +17,83 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_SHORTCUTS" />
 
     <application
-        android:name=".CloneApp"
+        android:name=".ClonixApp"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/Theme.ClonePilot"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Clonix"
         android:directBootAware="true"
-        android:allowBackup="false">
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:localeConfig="@xml/locales_config">
+
+        <activity
+            android:name=".HomeActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <!-- launcher entry (Home tab) -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.clonix.app.OPEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <!-- Entry from system Settings -->
             <intent-filter>
-                <action android:name="com.clonepilot.app.OPEN" />
+                <action android:name="com.clonix.app.OPEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- LOCAL APPS screen -->
+        <activity
+            android:name=".AppsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.clonix.app.APPS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Schedules tab -->
+        <activity
+            android:name=".SchedulesActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.clonix.app.SCHEDULES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Account tab -->
+        <activity
+            android:name=".AccountActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.clonix.app.ACCOUNT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <!-- Trampoline to launch a clone from shortcut without Launcher patch -->
         <activity
-            android:name=".CloneLauncherTrampoline"
+            android:name=".LauncherTrampoline"
             android:exported="true"
             android:excludeFromRecents="true"
             android:noHistory="true"
@@ -55,13 +103,61 @@
             android:name=".StorageActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.clonepilot.app.STORAGE" />
+                <action android:name="com.clonix.app.STORAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.clonix.app.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".BackupCenterActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.clonix.app.BACKUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ArchivesActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.clonix.app.ARCHIVES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- DASHBOARD action → Storage (absorbed the old dashboard). -->
+        <activity-alias
+            android:name=".DashboardActivity"
+            android:exported="true"
+            android:targetActivity=".StorageActivity">
+            <intent-filter>
+                <action android:name="com.clonix.app.DASHBOARD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".AppDetailActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.clonix.app.APPDETAIL" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <receiver
-            android:name=".CloneAdminReceiver"
+            android:name=".DeviceAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN"
             android:exported="false">
             <meta-data
@@ -99,24 +195,64 @@
             android:name=".PinResultReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.clonepilot.app.PIN_RESULT" />
+                <action android:name="com.clonix.app.PIN_RESULT" />
             </intent-filter>
         </receiver>
 
         <!-- Headless test hook: shell/root (adb) only, enforced in code. -->
         <receiver
-            android:name=".CloneTestReceiver"
+            android:name=".TestHookReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.clonepilot.app.TEST" />
+                <action android:name="com.clonix.app.TEST" />
             </intent-filter>
         </receiver>
 
+        <!-- Secure file sharing (archives/APKs via system sharesheet). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.clonix.app.share"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Periodic keep-alive for background clone users (notifications). -->
         <service
-            android:name=".CloneKeepAliveJob"
+            android:name=".KeepAliveJob"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
+
+        <!-- Scheduled batch backups (all tracked, non-blacklisted clones). -->
+        <service
+            android:name=".BackupScheduler$SchedJob"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <!-- Scheduled integrity verification (all archives). -->
+        <service
+            android:name=".VerifyScheduler$SchedJob"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <!-- Screen-off auto-freeze watcher (foreground: zero polling). -->
+        <service
+            android:name=".AutoFreezeService"
+            android:exported="false" />
+
+        <!-- Quick Settings tile: wake all clones on demand. -->
+        <service
+            android:name=".QuickTileService"
+            android:label="@string/tile_label"
+            android:icon="@drawable/ic_tile"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

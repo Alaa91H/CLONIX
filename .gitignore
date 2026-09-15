@@ -3,3 +3,14 @@ local.properties
 build/
 app/build/
 ClonePilot.apk
+Clonix.apk
+
+# Signing material — never commit secrets
+keystore/*
+!keystore/README.txt
+gradle-build/keystore.properties
+gradle-build/clonix-release.jks
+
+# Local design scratch (icon proposals, device captures)
+design/
+.freebuff/
