@@ -551,4 +551,13 @@
     <string name="sel_hint">Tap icons to select apps</string>
     <string name="set_badge">Clone badge style</string>
     <string name="set_badge_sub">Icon overlay for every clone</string>
+    <string name="set_dynamic">Dynamic color (Material You)</string>
+    <string name="set_dynamic_sum">Follow wallpaper colors on supported devices</string>
+    <string name="set_battery">Unrestricted battery (reliability)</string>
+    <string name="set_battery_sum">Let scheduled backups run on time — request exemption from battery optimization</string>
+    <string name="restart_needed">Restart the app to apply</string>
+    <string name="wiz_corrupt">This archive failed the integrity check and cannot be restored safely.\n\nDetails: %1$s\n\nPick another archive or create a fresh backup.</string>
+    <string name="notif_missing">Notifications are off — enable them in system settings</string>
+    <string name="set_battery_on">Exempted — backups run on time</string>
+    <string name="set_battery_off">Not exempted — tap to request</string>
 </resources>

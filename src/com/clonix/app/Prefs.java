@@ -128,4 +128,15 @@ public final class Prefs {
         try { p(c).edit().putString("theme_mode", m).apply(); }
         catch (Throwable ignore) { }
     }
+
+    /** Material You dynamic color (Android 12+), default on. */
+    public static boolean dynamicColor(Context c) {
+        try { return p(c).getBoolean("dynamic_color", true); }
+        catch (Throwable t) { return true; }
+    }
+
+    public static void setDynamicColor(Context c, boolean b) {
+        try { p(c).edit().putBoolean("dynamic_color", b).apply(); }
+        catch (Throwable ignore) { }
+    }
 }

@@ -15,8 +15,17 @@ public class ClonixApp extends Application {
     @Override public void onCreate() {
         super.onCreate();
         sInstance = this;
-        try { DynamicColors.applyToActivitiesIfAvailable(this); }
-        catch (Throwable ignore) { }
+        applyDynamicColors(this);
         try { BackupJob.syncCompOverride(this); } catch (Throwable ignore) { }
+    }
+
+    /** Honor the Settings toggle: Material You overlay only when enabled. */
+    public static void applyDynamicColors(Application app) {
+        try {
+            if (Prefs.dynamicColor(app)
+                    && DynamicColors.isDynamicColorAvailable()) {
+                DynamicColors.applyToActivitiesIfAvailable(app);
+            }
+        } catch (Throwable ignore) { }
     }
 }

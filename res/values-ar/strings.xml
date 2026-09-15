@@ -549,4 +549,13 @@
     <string name="sel_hint">اضغط على أيقونة التطبيق للتحديد</string>
     <string name="set_badge">شارة النسخ</string>
     <string name="set_badge_sub">الشكل المميز على أيقونة كل نسخة</string>
+    <string name="set_dynamic">الألوان الديناميكية (Material You)</string>
+    <string name="set_dynamic_sum">تتبع ألوان الخلفية على الأجهزة الداعمة</string>
+    <string name="set_battery">بطارية غير مقيّدة (للموثوقية)</string>
+    <string name="set_battery_sum">لتشغيل النسخ المجدول في وقته — طلب استثناء من تحسين البطارية</string>
+    <string name="restart_needed">أعد تشغيل التطبيق لتطبيق التغيير</string>
+    <string name="wiz_corrupt">فشل فحص سلامة هذه النسخة ولا يمكن استعادتها بأمان.\n\nالتفاصيل: %1$s\n\nاختر نسخة أخرى أو أنشئ نسخة جديدة.</string>
+    <string name="notif_missing">الإشعارات مغلقة — فعّلها من إعدادات النظام</string>
+    <string name="set_battery_on">مُستثنى — النسخ المجدول يعمل في وقته</string>
+    <string name="set_battery_off">غير مستثنى — اضغط للطلب</string>
 </resources>

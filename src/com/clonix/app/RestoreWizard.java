@@ -224,6 +224,40 @@ public final class RestoreWizard {
     private static void execute(final Activity a, final CloneStore db,
             final String pkg, final int userId, final String archive,
             final BackupJob sel, final Runnable onDone) {
+        // Integrity gate: verify the archive BEFORE touching the device.
+        // A corrupted archive would otherwise half-restore (data wiped but
+        // tar fails mid-stream). Empty sidecar = legacy archive, skip.
+        final ProgressTask.Handle vprog = ProgressTask.show(a,
+            a.getString(R.string.wiz_step3), a.getString(R.string.verifying),
+            null);
+        new Thread(() -> {
+            ShellEngine.VerifyResult v = null;
+            try {
+                v = ShellEngine.verifyArchive(archive,
+                    archive.endsWith(".enc")
+                        ? CryptoVault.sessionPassword() : null);
+            } catch (Throwable ignore) { }
+            final ShellEngine.VerifyResult vf = v;
+            a.runOnUiThread(() -> {
+                try { vprog.dismiss(); } catch (Throwable ignore) { }
+                if (vf != null && !vf.ok) {
+                    new MaterialAlertDialogBuilder(a)
+                        .setTitle(R.string.restore)
+                        .setMessage(a.getString(R.string.wiz_corrupt,
+                            vf.detail == null ? "" : vf.detail))
+                        .setPositiveButton(R.string.cancel, null)
+                        .show();
+                    return;
+                }
+                executeVerified(a, db, pkg, userId, archive, sel, onDone);
+            });
+        }).start();
+    }
+
+    /** The former execute body, run only after the archive passed verify. */
+    private static void executeVerified(final Activity a, final CloneStore db,
+            final String pkg, final int userId, final String archive,
+            final BackupJob sel, final Runnable onDone) {
         // M3: non-trapping progress — user may background it, Notify on done.
         final ProgressTask.Handle prog = ProgressTask.show(a,
             a.getString(R.string.wiz_step3), a.getString(R.string.restoring),

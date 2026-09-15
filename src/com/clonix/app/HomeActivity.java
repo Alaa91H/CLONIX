@@ -92,6 +92,15 @@ public class HomeActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+        // Android 13+ gate: without POST_NOTIFICATIONS the user never sees
+        // backup/restore completion results. Ask once per install (the
+        // system only allows one prompt; afterwards it's a no-op).
+        if (android.os.Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                android.Manifest.permission.POST_NOTIFICATIONS}, 41);
+        }
         try { NavHelper.refreshBadges(this); } catch (Throwable ignore) { }
         reload();
     }

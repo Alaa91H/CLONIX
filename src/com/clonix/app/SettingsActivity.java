@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,22 @@ public class SettingsActivity extends Activity {
         swSounds.setOnCheckedChangeListener((v, checked) ->
             Prefs.setSounds(this, checked));
 
+        // Material You toggle: applies to the NEXT launch (theme is
+        // installed at Application onCreate). Offer an immediate restart
+        // so the change is visible without a manual app restart.
+        MaterialSwitch swDyn = findViewById(R.id.sw_dynamic);
+        swDyn.setChecked(Prefs.dynamicColor(this));
+        swDyn.setOnCheckedChangeListener((v, checked) -> {
+            Prefs.setDynamicColor(this, checked);
+            Toast.makeText(this, R.string.restart_needed, Toast.LENGTH_SHORT).show();
+        });
+
+        // Battery-optimization exemption: scheduled backups (JobScheduler)
+        // run on time instead of being deferred for hours in Doze.
+        View battery = findViewById(R.id.btn_battery);
+        battery.setOnClickListener(v -> requestIgnoreBatteryOpt());
+        refreshBatterySummary();
+
         findViewById(R.id.btn_badge).setOnClickListener(v ->
             BadgeEditor.showGlobal(this));
 
@@ -99,10 +116,10 @@ public class SettingsActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         refreshSummaries();
+        refreshBatterySummary();
     }
 
-    /** AOSP glance rule: every row shows its live value, no tap needed. */
-    /** EngineLog viewer viewer: scrollable log + share/clear. */
+    /** EngineLog viewer: scrollable log + share/clear. */
     private void showLogger() {
         final String text = EngineLog.dump(this);
         new MaterialAlertDialogBuilder(this)
@@ -294,6 +311,40 @@ public class SettingsActivity extends Activity {
             })
             .setNegativeButton(R.string.cancel, null)
             .show();
+    }
+
+    /** Ask the system to exempt the app from battery optimization so
+     *  JobScheduler backup runs are not deferred for hours in Doze. */
+    private void requestIgnoreBatteryOpt() {
+        try {
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            String pkg = getPackageName();
+            if (pm != null && pm.isIgnoringBatteryOptimizations(pkg)) {
+                // Already exempt: deep-link to the system screen so the user
+                // can revoke it if they changed their mind.
+                startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+                return;
+            }
+            @SuppressWarnings("BatteryLife")
+            Intent i = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + pkg));
+            startActivity(i);
+        } catch (Throwable t) {
+            Toast.makeText(this, String.valueOf(t.getMessage()),
+                Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void refreshBatterySummary() {
+        try {
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            boolean on = pm != null
+                && pm.isIgnoringBatteryOptimizations(getPackageName());
+            TextView s = findViewById(R.id.sum_battery);
+            if (s != null) {
+                s.setText(on ? R.string.set_battery_on : R.string.set_battery_off);
+            }
+        } catch (Throwable ignore) { }
     }
 
     private void showThemeDialog() {
